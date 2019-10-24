@@ -116,71 +116,102 @@ MouseMotionListener mx;
         panel_1.setBounds(100, 25, 200, 100);
         panel.add(panel_1);
         panel_1.setLayout(null);
-//        Button square = new Button("Square");
-//        square.addActionListener(new ActionListener() {
-//        	public void actionPerformed(ActionEvent e) {
-//        		canvse.addMouseMotionListener(new MouseMotionListener() {
-//
-//					@Override
-//					public void mouseDragged(MouseEvent e) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//
-//					@Override
-//					public void mouseMoved(MouseEvent e) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//        			
-//        		});
-//        		 canvse.addMouseListener(new MouseListener() {
-//        			
-//                     @Override
-//                     public void mouseClicked(MouseEvent e) {
-//                    
-//                         Graphics g = canvse.getGraphics();
-//
-//                         g.setColor(Color.red);
-//
-//                         // get X and y position
-//                         int x, y;
-//                         x = e.getX();
-//                         y = e.getY();
-//
-//                         // draw a Oval at the point
-//                         // where mouse is moved
-//                         g.drawRect(x, y, 100, 100);
-//                         
-//                         canvse.removeMouseListener(this);
-//                     }
-//                     
-// 					@Override
-// 					public void mouseEntered(MouseEvent e) {}
-//
-// 					@Override
-// 					public void mouseExited(MouseEvent e) {}
-//
-// 					@Override
-// 					public void mousePressed(MouseEvent e) {
-////						 x = e.getX();
-////	                     y = e.getY();
-// 					}
-//
-// 					
-// 					public void mouseReleased(MouseEvent e) {}
-// 					
-//         	});
-//        		 
-//        	}
-//    
-//        });
-//        square.setBounds(0, 0, 60, 25);
-//        panel_1.add(square);
+        Button square = new Button("Square");
+        square.addActionListener(new ActionListener() {
+        Square sq=new Square();
+    	int x,y,x2,y2;
+    	int psx;
+    	public void actionPerformed(ActionEvent arg0) {
+            canvse.addMouseListener(ml=new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    
+                }
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					x = e.getX();
+                     y = e.getY();
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					Point temp=new Point ();
+					temp.x=x;
+					temp.y=y;
+					x2 = e.getX();
+                    y2 = e.getY();
+                    if(y2<y)temp.y=y2;
+                    if(x2<x)temp.x=x2;
+                    if(Math.abs(x2-x)>Math.abs(y2-y)) {psx=Math.abs(x2-x);}
+                    else {psx=Math.abs(y2-y);}
+        			Point hr =new Point();
+        			hr.x=x2;
+        			hr.y=y2;
+                    Graphics g = canvse.getGraphics();
+        			 sq.parm(temp.x,temp.y,psx,psx);
+                     sq.setPosition(temp);
+        			 dg=new drweng();
+        			dg.setlastpost(hr);
+        			dg.addShape(sq);
+        			shapes.add("3,"+temp.x+","+temp.y+","+ psx+","+ psx);
+
+        			sq.draw(g);
+        			redraw(canvse);
+        			canvse.removeMouseListener(this);
+        			canvse.removeMouseMotionListener(mx);
+					// TODO Auto-generated method stub
+					
+					
+				}
+    	});
+            canvse.addMouseMotionListener(mx=new MouseMotionListener() {
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Graphics g = canvse.getGraphics();
+				Point temp=new Point ();
+				temp.x=x;
+				temp.y=y;
+				x2 = e.getX();
+                y2 = e.getY();
+                if(y2<y)temp.y=y2;
+                if(x2<x)temp.x=x2;
+                mx=this;
+                if(Math.abs(x2-x)>Math.abs(y2-y)) {psx=Math.abs(x2-x);}
+                else {psx=Math.abs(y2-y);}
+                sq.parm(temp.x,temp.y,psx, psx);
+                sq.draw(g);
+//                g.drawRect(x,y, Math.abs(x-x2), Math.abs(y-y2));
+    			canvse.repaint();
+    			redraw(canvse);
+
+			}
+			public void mouseMoved(MouseEvent e) {}
+		});
+
+    }
+    
+        });
+        square.setBounds(0, 0, 60, 25);
+        panel_1.add(square);
         
         Button rectangle = new Button("Rectangle");
         rectangle.addActionListener(new ActionListener() {
-        	Rectangle r;
+        	Rectangle r=new Rectangle();
         	int x,y,x2,y2;
         	public void actionPerformed(ActionEvent arg0) {
                 canvse.addMouseListener(ml=new MouseListener() {
@@ -221,12 +252,12 @@ MouseMotionListener mx;
 	        			hr.x=x2;
 	        			hr.y=y2;
 	                    Graphics g = canvse.getGraphics();
-	        			 r=new Rectangle(x,y, Math.abs(x-x2), Math.abs(y-y2));
+	        			 r.parm(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
 	                     r.setPosition(temp);
 	        			 dg=new drweng();
 	        			dg.setlastpost(hr);
 	        			dg.addShape(r);
-	        			shapes.add("2,"+x+","+y+","+Math.abs(x-x2)+","+Math.abs(y-y2));
+	        			shapes.add("2,"+temp.x+","+temp.y+","+Math.abs(x-x2)+","+Math.abs(y-y2));
 
 	        			r.draw(g);
 	        			redraw(canvse);
@@ -249,9 +280,10 @@ MouseMotionListener mx;
                     y2 = e.getY();
                     if(y2<y)temp.y=y2;
                     if(x2<x)temp.x=x2;
-
-mx=this;
-                    g.drawRect(x,y, Math.abs(x-x2), Math.abs(y-y2));
+                    mx=this;
+                    r.parm(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
+                    r.draw(g);
+//                    g.drawRect(x,y, Math.abs(x-x2), Math.abs(y-y2));
         			canvse.repaint();
         			redraw(canvse);
  
@@ -358,12 +390,12 @@ mx=this;
 		
 		for(int i=0;i<shapes.size();i++) {
 			String s=shapes.get(i);
+			String[] in=s.split(",");
+			x=Integer.valueOf(in[1]);
+			y=Integer.valueOf(in[2]);
+			x2=Integer.valueOf(in[3]);
+			y2=Integer.valueOf(in[4]);
 			if(s.charAt(0)=='1') {
-				String[] in=s.split(",");
-				x=Integer.valueOf(in[1]);
-				y=Integer.valueOf(in[2]);
-				x2=Integer.valueOf(in[3]);
-				y2=Integer.valueOf(in[4]);
 				tempx=x;
 				tempy=y;
 				if(y2<y)tempy=y2;
@@ -372,12 +404,8 @@ mx=this;
     			int h=(int) Math.round(k);
 				g.drawOval(tempx, tempy, h, h);
 			}else if(s.charAt(0)=='2') {
-				String[] in=s.split(",");
-				x=Integer.valueOf(in[1]);
-				y=Integer.valueOf(in[2]);
-				x2=Integer.valueOf(in[3]);
-				y2=Integer.valueOf(in[4]);
-
+				g.drawRect(x, y, x2, y2);
+			}else if(s.charAt(0)=='3') {
 				g.drawRect(x, y, x2, y2);
 			}
 		}

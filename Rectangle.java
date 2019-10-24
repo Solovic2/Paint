@@ -3,22 +3,11 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Map;
 
 public class Rectangle extends ourshape{
 	private int posx,posy,wid,hie;
 	int x,y;
-	Rectangle(){
-		
-	}
-	Rectangle(int x ,int y,int w,int h){
-		this.posx=x;
-		this.posy=y;
-		this.wid=w;
-		this.hie=h;
-	}
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
@@ -79,6 +68,12 @@ public class Rectangle extends ourshape{
 	public Object clone() throws CloneNotSupportedException{
 		return null;
 		
+	}
+	public void parm(int p1,int p2,int wi,int hi) {
+		this.posx=p1;
+		this.posy=p2;
+		this.wid=wi;
+		this.hie=hi;
 	}
 
 }

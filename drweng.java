@@ -11,6 +11,7 @@ private Point posStart=new Point();
 private Point posEnd=new Point();
 private Point last;
 String num_of_shape;
+Rectangle r=new Rectangle();
 ourshape mainshape=new ourshape();
 ArrayList <String> shapes=new ArrayList<>();
 	@Override
@@ -92,20 +93,33 @@ ArrayList <String> shapes=new ArrayList<>();
 	public Point getlastpost() {
 		return last;
 	}
-	public void redraw(Canvas canvse) {
-		Graphics g = canvse.getGraphics();
-		int x,y,h;
-		for(int i=0;i<shapes.size();i++) {
-			String s=shapes.get(i);
-			if(s.charAt(0)=='1') {
-				String[] in=s.split(",");
-				x=Integer.valueOf(in[1]);
-				y=Integer.valueOf(in[2]);
-				h=Integer.valueOf(in[3]);
-				g.drawOval(x, y, h, h);
-			}
-		}
-	}
+//	public void redraw(Canvas canvse) {
+//		System.out.println("here we are111");
+//		Graphics g = canvse.getGraphics();
+//		int x,y,x2,y2,tempx,tempy;
+//		for(int i=0;i<shapes.size();i++) {
+//			String s=shapes.get(i);
+//			String[] in=s.split(",");
+//			x=Integer.valueOf(in[1]);
+//			y=Integer.valueOf(in[2]);
+//			x2=Integer.valueOf(in[3]);
+//			y2=Integer.valueOf(in[4]);
+//			if(s.charAt(0)=='1') {
+//				tempx=x;
+//				tempy=y;
+//				if(y2<y)tempy=y2;
+//	            if(x2<x)tempx=x2;
+//				double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
+//    			int h=(int) Math.round(k);
+//				g.drawOval(tempx, tempy, h, h);
+//			}else if(s.charAt(0)=='2') {
+//
+//				g.drawRect(x, y, x2, y2);
+//			}
+//			System.out.println(shapes);
+//
+//		}
+//	}
 
 
 }

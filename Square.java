@@ -7,16 +7,22 @@ import java.util.Map;
 
 public class Square implements Shape {
 
+	private int posx,posy,wid,hie;
+	int x,y;
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
-		
+		x=position.x;
+		y=position.y;
 	}
 
 	@Override
 	public Point getPosition() {
 		// TODO Auto-generated method stub
-		return null;
+		Point ans =new Point();
+		ans.x=x;
+		ans.y=y;
+		return ans;
 	}
 
 	@Override
@@ -57,11 +63,18 @@ public class Square implements Shape {
 
 	@Override
 	public void draw(Graphics canvas) {
+		canvas.drawRect(this.posx, this.posy, this.wid, this.hie);
 		
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return null;
 		
+	}
+	public void parm(int p1,int p2,int wi,int hi) {
+		this.posx=p1;
+		this.posy=p2;
+		this.wid=wi;
+		this.hie=hi;
 	}
 
 }
