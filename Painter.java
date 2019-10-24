@@ -12,27 +12,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-
-import javax.swing.SpringLayout;
-import javax.swing.BoxLayout;
-import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.CardLayout;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
 
 public class Painter {
 
@@ -298,6 +285,89 @@ MouseMotionListener mx;
         panel_1.add(rectangle);
         
         Button triangle = new Button("Triangle");
+        triangle.addActionListener(new ActionListener() {
+        	Triangle t=new Triangle();
+        	int x,y,x2,y2;
+        	public void actionPerformed(ActionEvent arg0) {
+                canvse.addMouseListener(ml=new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        
+                    }
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void mousePressed(MouseEvent e) {
+						// TODO Auto-generated method stub
+						x = e.getX();
+	                     y = e.getY();
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						Point temp=new Point ();
+						temp.x=x;
+						temp.y=y;
+						x2 = e.getX();
+	                    y2 = e.getY();
+//	                    if(y2<y)temp.y=y2;
+//	                    if(x2<x)temp.x=x2;
+	        			Point hr =new Point();
+	        			hr.x=x2;
+	        			hr.y=y2;
+	                    Graphics g = canvse.getGraphics();
+	        			 t.parm(temp.x,temp.y, x2,y2);
+	                     t.setPosition(temp);
+	        			 dg=new drweng();
+	        			dg.setlastpost(hr);
+	        			dg.addShape(t);
+	        			shapes.add("4,"+temp.x+","+temp.y+","+x2+","+y2);
+
+	        			t.draw(g);
+	        			redraw(canvse);
+	        			canvse.removeMouseListener(this);
+	        			canvse.removeMouseMotionListener(mx);
+						// TODO Auto-generated method stub
+						
+						
+					}
+        	});
+                canvse.addMouseMotionListener(mx=new MouseMotionListener() {
+    			
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					Graphics g = canvse.getGraphics();
+					Point temp=new Point ();
+					temp.x=x;
+					temp.y=y;
+					x2 = e.getX();
+                    y2 = e.getY();
+//                    if(y2<y)temp.y=y2;
+//                    if(x2<x)temp.x=x2;
+                    mx=this;
+                    t.parm(temp.x,temp.y, x2, y2);
+                    t.draw(g);
+//                    g.drawRect(x,y, Math.abs(x-x2), Math.abs(y-y2));
+        			canvse.repaint();
+        			redraw(canvse);
+ 
+				}
+				public void mouseMoved(MouseEvent e) {}
+    		});
+
+        }
+        });
         triangle.setBounds(0, 70, 60, 25);
         panel_1.add(triangle);
         
@@ -367,7 +437,6 @@ MouseMotionListener mx;
 	        			mx=this;
 //	        			canvse.removeMouseMotionListener(this);
 
-
 	 
 					}
 					public void mouseMoved(MouseEvent e) {}
@@ -407,6 +476,16 @@ MouseMotionListener mx;
 				g.drawRect(x, y, x2, y2);
 			}else if(s.charAt(0)=='3') {
 				g.drawRect(x, y, x2, y2);
+			}else if(s.charAt(0)=='4') {
+				if(x2>x) {
+				g.drawLine(x,y, x2, y2);
+				g.drawLine(x2, y2,x-Math.abs(x-x2),y2);
+				g.drawLine(x-Math.abs(x-x2),y2,x,y);
+				}else if(x>x2) {
+					g.drawLine(x,y, x2, y2);
+					g.drawLine(x2, y2,x+Math.abs(x-x2),y2);
+					g.drawLine(x+Math.abs(x-x2),y2,x,y);					
+				}
 			}
 		}
 	}

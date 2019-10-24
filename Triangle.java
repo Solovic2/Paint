@@ -5,18 +5,23 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Map;
 
-public class Triangle implements Shape{
-
+public class Triangle extends ourshape{
+	private int posx,posy,wid,hie;
+	int x,y;
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
-		
+		x=position.x;
+		y=position.y;
 	}
 
 	@Override
 	public Point getPosition() {
 		// TODO Auto-generated method stub
-		return null;
+		Point ans =new Point();
+		ans.x=x;
+		ans.y=y;
+		return ans;
 	}
 
 	@Override
@@ -57,12 +62,25 @@ public class Triangle implements Shape{
 
 	@Override
 	public void draw(Graphics canvas) {
-		// TODO Auto-generated method stub
-		
+		if(posx>wid) {
+		canvas.drawLine(this.posx, this.posy, this.wid, this.hie);
+		canvas.drawLine(this.wid, this.hie,this.posx+Math.abs(this.posx-this.wid),this.hie);
+		canvas.drawLine(this.posx+Math.abs(this.posx-this.wid),this.hie,this.posx,this.posy);
+		}else if(posx<wid) {
+			canvas.drawLine(this.posx, this.posy, this.wid, this.hie);
+			canvas.drawLine(this.wid, this.hie,this.posx-Math.abs(this.posx-this.wid),this.hie);
+			canvas.drawLine(this.posx-Math.abs(this.posx-this.wid),this.hie,this.posx,this.posy);
+		}
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return null;
 		
+	}
+	public void parm(int p1,int p2,int wi,int hi) {
+		this.posx=p1;
+		this.posy=p2;
+		this.wid=wi;
+		this.hie=hi;
 	}
 
 }
