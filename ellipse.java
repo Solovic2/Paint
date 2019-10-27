@@ -5,23 +5,20 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Map;
 
-public class Square implements Shape {
-
-	private int posx,posy,wid,hie;
-	@Override
-	public void setPosition(Point position) {
-		// TODO Auto-generated method stub
-		posx=position.x;
-		posy=position.y;
+public class ellipse extends ourshape {
+	Point pos =new Point();
+	Point lastPos =new Point();
+	int radios;
+	Color c=Color.black;
+	
+	public java.awt.Point getPosition(){
+		
+		return pos;
 	}
 
 	@Override
-	public Point getPosition() {
-		// TODO Auto-generated method stub
-		Point ans =new Point();
-		ans.x=posx;
-		ans.y=posy;
-		return ans;
+	public void setPosition(Point position) {
+		pos=position;
 	}
 
 	@Override
@@ -38,14 +35,12 @@ public class Square implements Shape {
 
 	@Override
 	public void setColor(Color color) {
-		// TODO Auto-generated method stub
-		
+		c=color;
 	}
 
 	@Override
 	public Color getColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return c;
 	}
 
 	@Override
@@ -62,15 +57,14 @@ public class Square implements Shape {
 
 	@Override
 	public void draw(Graphics canvas) {
-		canvas.drawRect(this.posx, this.posy, this.wid, this.hie);
+		
+        canvas.drawArc(pos.x, pos.y,Math.abs(pos.x-lastPos.x),Math.abs(pos.y-lastPos.y), 0, 360);
 	}
 	public Object clone() throws CloneNotSupportedException{
-		return null;
+		return c;
 		
 	}
-	public void setDim(int wi,int hi) {
-		this.wid=wi;
-		this.hie=hi;
+	public void setLastPosition(Point position) {
+		lastPos=position;
 	}
-
 }

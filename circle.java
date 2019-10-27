@@ -62,6 +62,10 @@ public class circle extends ourshape {
 	public void draw(Graphics canvas) {
 		canvas.drawArc(x, y, radios, radios, 0, 360);
 	}
+	public void setRad(int wi) {
+		this.radios=wi;
+		
+	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
 		

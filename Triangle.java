@@ -7,20 +7,20 @@ import java.util.Map;
 
 public class Triangle extends ourshape{
 	private int posx,posy,wid,hie;
-	int x,y;
+
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
-		x=position.x;
-		y=position.y;
+		posx=position.x;
+		posy=position.y;
 	}
 
 	@Override
 	public Point getPosition() {
 		// TODO Auto-generated method stub
 		Point ans =new Point();
-		ans.x=x;
-		ans.y=y;
+		ans.x=posx;
+		ans.y=posy;
 		return ans;
 	}
 
@@ -76,9 +76,7 @@ public class Triangle extends ourshape{
 		return null;
 		
 	}
-	public void parm(int p1,int p2,int wi,int hi) {
-		this.posx=p1;
-		this.posy=p2;
+	public void setDim(int wi,int hi) {
 		this.wid=wi;
 		this.hie=hi;
 	}
