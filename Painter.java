@@ -9,7 +9,10 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -31,6 +34,16 @@ import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
+import java.awt.Choice;
+import java.awt.ComponentOrientation;
+import javax.swing.JList;
+import java.awt.event.MouseAdapter;
+import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Painter {
 	
@@ -39,6 +52,9 @@ public class Painter {
 	MouseListener ml;
 	MouseMotionListener mx;
 	int numOfShape=0;
+	Color color=Color.black;
+	Color fillColor=Color.white;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -54,7 +70,6 @@ public class Painter {
 			}
 		});
 	}
-
 	/**
 	 * Create the application.
 	 */
@@ -73,6 +88,7 @@ public class Painter {
         frame.setTitle("Paint");
         frame.getContentPane().setLayout(null);
         Canvas canvse =new Canvas();
+        canvse.setBackground(Color.WHITE);
         canvse.setSize(1924, 855);
         canvse.setLocation(0, 200);
         canvse.setPreferredSize(new Dimension(2000,1500));
@@ -102,17 +118,50 @@ public class Painter {
         menuBar.add(mntmNewMenuItem_1);
         
         JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
+        mntmNewMenuItem_2.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent arg0) {
+        		JFileChooser fc=new JFileChooser();
+        		int response=fc.showSaveDialog(mntmNewMenuItem_2);
+        		if(response==JFileChooser.APPROVE_OPTION) {
+        			String fileName;
+        			fileName=fc.getSelectedFile().toString();
+        			dg.save(fileName);
+        		}
+        	}
+        });
         mntmNewMenuItem_2.setMaximumSize(new Dimension(100, 100));
         menuBar.add(mntmNewMenuItem_2);
         
         JMenuItem mntmNewMenuItem_3 = new JMenuItem("Load");
+        mntmNewMenuItem_3.addMouseListener(new MouseAdapter() {
+        	Graphics g = canvse.getGraphics();
+        	@Override
+        	public void mousePressed(MouseEvent arg0) {
+        		canvse.repaint();
+        		JFileChooser fc=new JFileChooser();
+        		javax.swing.filechooser.FileFilter filter1=new FileNameExtensionFilter("XML file","xml");
+        		javax.swing.filechooser.FileFilter filter2=new FileNameExtensionFilter("JSON file","json");
+        		fc.setFileFilter(filter1);
+        		fc.setFileFilter(filter2);
+        		int response=fc.showOpenDialog(mntmNewMenuItem_3);
+        		if(response==JFileChooser.APPROVE_OPTION) {
+        			String fileName;
+        			fileName=fc.getSelectedFile().toString();
+        			dg.load(fileName);  			
+        		}
+        		dg.droow(g);
+        	}
+        });
         mntmNewMenuItem_3.setMaximumSize(new Dimension(100, 100));
         menuBar.add(mntmNewMenuItem_3);
         
         JPanel panel_1 = new JPanel();
-        panel_1.setBounds(100, 25, 200, 100);
+        panel_1.setBounds(96, 39, 309, 118);
         panel.add(panel_1);
         panel_1.setLayout(null);
+
+       
         //**************************square***********************
         Button square = new Button("Square");
         square.addActionListener(new ActionListener() {
@@ -154,6 +203,12 @@ public class Painter {
                     sq.setPosition(temp);
         			dg.addShape(sq);
         			dg.droow(g);
+        			Map<String,Double> m=new HashMap<>();
+	    			m.put("positionx", temp.getX());
+	    			m.put("positiony", temp.getY());
+	    			m.put("lastPositionx",(double)psx);
+	    			m.put("lastPositiony",(double) psx);
+	    			sq.setProperties(m);
         			canvse.removeMouseListener(this);
         			canvse.removeMouseMotionListener(mx);
 				}
@@ -221,11 +276,17 @@ public class Painter {
 	                    if(y2<y)temp.y=y2;
 	                    if(x2<x)temp.x=x2;
 	                    Graphics g = canvse.getGraphics();
-	        			 r.setDim(Math.abs(x-x2), Math.abs(y-y2));
-	                     r.setPosition(temp);
+	                    r.setDim(Math.abs(x-x2), Math.abs(y-y2));
+	                    r.setPosition(temp);
 	        			dg.addShape(r);
 	        			r.draw(g);
 	        			dg.droow(g);
+	        			Map<String,Double> m=new HashMap<>();
+		    			m.put("positionx", temp.getX());
+		    			m.put("positiony", temp.getY());
+		    			m.put("lastPositionx",(double)Math.abs(x-x2));
+		    			m.put("lastPositiony",(double) Math.abs(y-y2));
+		    			r.setProperties(m);
 	        			canvse.removeMouseListener(this);
 	        			canvse.removeMouseMotionListener(mx);
 	        			}
@@ -258,8 +319,7 @@ public class Painter {
         panel_1.add(rectangle);
         //**************************Trianglr*********************
         Button triangle = new Button("Triangle");
-        triangle.addActionListener(new ActionListener() {
-        	
+        triangle.addActionListener(new ActionListener() {  	
         	int x,y,x2,y2;
         	public void actionPerformed(ActionEvent arg0) {
         		canvse.removeMouseListener(ml);
@@ -292,11 +352,17 @@ public class Painter {
 	        			hr.x=x2;
 	        			hr.y=y2;
 	                    Graphics g = canvse.getGraphics();
-	        			 t.setDim(x2,y2);
-	                     t.setPosition(temp);
+	                    t.setDim(x2,y2);
+	                    t.setPosition(temp);
 	        			dg.addShape(t);
 	        			t.draw(g);
 	        			dg.droow(g);
+	        			Map<String,Double> m=new HashMap<>();
+		    			m.put("positionx", temp.getX());
+		    			m.put("positiony", temp.getY());
+		    			m.put("lastPositionx",(double)x2);
+		    			m.put("lastPositiony",(double) y2);
+		    			t.setProperties(m);
 	        			canvse.removeMouseListener(this);
 	        			canvse.removeMouseMotionListener(mx);
 	        			}
@@ -358,16 +424,23 @@ public class Painter {
 						temp.y=y;
 						x2 = e.getX();
 	                    y2 = e.getY();
-	                    if(y2<y)temp.y=y2;
-	                    if(x2<x)temp.x=x2;
+	                    if(y2<y){temp.y=y2;y2=y;}
+	                    if(x2<x){temp.x=x2;x2=x;}
 	                    c.setPosition(temp);
 	                    Graphics g = canvse.getGraphics();
-	                	double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-	        			int h=(int) Math.round(k);
+	                	
+	        			Point hr =new Point();
+	        			hr.x=x2;
+	        			hr.y=y2;
 	        			dg.addShape(c);
-	        			c.setRad(h);
-	        			
+	        			c.setDim(hr);
 	        			dg.droow(g);
+	        			Map<String,Double> m=new HashMap<>();
+		    			m.put("positionx", temp.getX());
+		    			m.put("positiony", temp.getY());
+		    			m.put("lastPositionx",(double)x2);
+		    			m.put("lastPositiony",(double) y2);
+		    			c.setProperties(m);
 	        			canvse.removeMouseListener(this);
 	        			canvse.removeMouseMotionListener(mx);
 					}
@@ -495,8 +568,22 @@ public class Painter {
         line.setActionCommand("Line");
         line.setBounds(75, 62, 67, 24);
         panel_1.add(line);
+        
+//        JButton btnColors = new JButton("colors");
+//        btnColors.addActionListener(new ButtonListener());
+//        btnColors.setBounds(168, 2, 89, 23);
+//        panel_1.add(btnColors);
+        
+        
 	}
 
+//	private class ButtonListener implements ActionListener {
+//	    public void actionPerformed(ActionEvent e) {
+//	      Color c = JColorChooser.showDialog(null, "Choose a Color", frame.setForeground(c));
+//	      if (c != null)
+////	        sampleText.setForeground(c);
+//	    }
+//	  }
 	Point pos=new Point();
 	Point lpos=new Point();
 	int x1,x2,y1,y2;
@@ -518,13 +605,19 @@ public class Painter {
 					line l=new line();
 					lpos=e.getPoint();
 	                l.setPosition(pos);
-	                l.setLastPosition(lpos);
+	                l.setLPosition(lpos);
 	                Graphics g = canvse.getGraphics();
 	    			Point hr =new Point();
 	    			hr=lpos;
 	    			dg.addShape(l);
 	    			l.draw(g);
 	    			dg.droow(g);
+	    			Map<String,Double> m=new HashMap<>();
+	    			m.put("positionx", pos.getX());
+	    			m.put("positiony", pos.getY());
+	    			m.put("lastPositionx",lpos.getX());
+	    			m.put("lastPositiony", lpos.getY());
+	    			l.setProperties(m);
 	    			canvse.removeMouseListener(this);
 	    			canvse.removeMouseMotionListener(mx);
     			}else if(numOfShape==6) {
@@ -546,6 +639,12 @@ public class Painter {
         			dg.addShape(el);
         			el.draw(g);
         			dg.droow(g);
+        			Map<String,Double> m=new HashMap<>();
+	    			m.put("positionx", temp.getX());
+	    			m.put("positiony", temp.getY());
+	    			m.put("lastPositionx",hr.getX());
+	    			m.put("lastPositiony", hr.getY());
+	    			el.setProperties(m);
         			canvse.removeMouseListener(this);
         			canvse.removeMouseMotionListener(mx);
     			}

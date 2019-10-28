@@ -3,11 +3,14 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Square implements Shape {
 
 	private int posx,posy,wid,hie;
+	Map<String, Double> Properties=new HashMap<String, Double>();
+	
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
@@ -26,13 +29,17 @@ public class Square implements Shape {
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		// TODO Auto-generated method stub
+		Properties=properties;
+		wid=(int)Math.round(Properties.get("lastPositionx"));
+		hie=(int)Math.round(Properties.get("lastPositiony"));
 		
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		// TODO Auto-generated method stub
+		if(!Properties.isEmpty()) {
+			return Properties;
+		}
 		return null;
 	}
 

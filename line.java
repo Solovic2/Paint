@@ -3,13 +3,16 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 public class line extends ourshape{
 	Point pos=new Point();
 	Point lpos=new Point();
-	Color c=Color.black;
+	Color c;
+	Map<String, Double> Properties=new HashMap<String, Double>();
 	
+	@Override
 	public java.awt.Point getPosition(){
 		return pos;
 	}
@@ -21,13 +24,17 @@ public class line extends ourshape{
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		// TODO Auto-generated method stub
-		
+		Properties=properties;
+		lpos.x=(int)Math.round(Properties.get("lastPositionx"));
+		lpos.y=(int)Math.round(Properties.get("lastPositiony"));
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		// TODO Auto-generated method stub
+		if(!Properties.isEmpty()) {
+			
+			return Properties;
+		}
 		return null;
 	}
 
@@ -57,11 +64,17 @@ public class line extends ourshape{
 	public void draw(Graphics canvas) {
 		canvas.drawLine(pos.x,pos.y,lpos.x,lpos.y);
 	}
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		return c;
 		
 	}
-	public void setLastPosition(Point position) {
+	
+	public void setLPosition(Point position) {
 		lpos=position;
+	}
+	
+	public java.awt.Point getlPosition(){
+		return lpos;
 	}
 }

@@ -3,13 +3,14 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ellipse extends ourshape {
 	Point pos =new Point();
 	Point lastPos =new Point();
-	int radios;
 	Color c=Color.black;
+	Map<String, Double> Properties=new HashMap<String, Double>();
 	
 	public java.awt.Point getPosition(){
 		
@@ -23,13 +24,16 @@ public class ellipse extends ourshape {
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		// TODO Auto-generated method stub
-		
+		Properties=properties;
+		lastPos.x=(int)Math.round(Properties.get("lastPositionx"));
+		lastPos.y=(int)Math.round(Properties.get("lastPositiony"));
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		// TODO Auto-generated method stub
+		if(!Properties.isEmpty()) {
+			return Properties;
+		}
 		return null;
 	}
 
