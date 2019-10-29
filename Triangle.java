@@ -7,20 +7,20 @@ import java.util.Map;
 
 public class Triangle extends ourshape{
 	private int posx,posy,wid,hie;
-	int x,y;
+
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
-		x=position.x;
-		y=position.y;
+		posx=position.x;
+		posy=position.y;
 	}
 
 	@Override
 	public Point getPosition() {
 		// TODO Auto-generated method stub
 		Point ans =new Point();
-		ans.x=x;
-		ans.y=y;
+		ans.x=posx;
+		ans.y=posy;
 		return ans;
 	}
 
@@ -76,11 +76,39 @@ public class Triangle extends ourshape{
 		return null;
 		
 	}
-	public void parm(int p1,int p2,int wi,int hi) {
-		this.posx=p1;
-		this.posy=p2;
+	public void setDim(int wi,int hi) {
 		this.wid=wi;
 		this.hie=hi;
 	}
-
+	int selectx,selecty,selectlastx,selectlasty;
+	public void setSelectionBounds(int x,int y, int w,int h) {
+		selectx=x;
+		selecty=y;
+		selectlastx=w;
+		selectlasty=h;
+	}
+	
+	public Point getval() {
+		Point w=new Point();
+		w.x=selectlastx;
+		w.y=selectlasty;
+		return w;
+	}
+	public Point getSelectionBounds() {
+		Point f=new Point();
+		f.x=selectx;
+		f.y=selecty;
+		return f;
+	}
+	public void border(Graphics g) {
+		// TODO Auto-generated method stub
+		g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
+		g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
+		g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
+		g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
+		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
+		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
+		g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
+		g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+	}
 }

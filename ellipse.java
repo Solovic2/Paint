@@ -5,23 +5,20 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Map;
 
-public class circle extends ourshape {
-
-	int x,y;
+public class ellipse extends ourshape {
+	Point pos =new Point();
+	Point lastPos =new Point();
 	int radios;
 	Color c=Color.black;
 	
 	public java.awt.Point getPosition(){
-		Point ans =new Point();
-		ans.x=x;
-		ans.y=y;
-		return ans;
+		
+		return pos;
 	}
 
 	@Override
 	public void setPosition(Point position) {
-		x=position.x;
-		y=position.y;
+		pos=position;
 	}
 
 	@Override
@@ -60,16 +57,17 @@ public class circle extends ourshape {
 
 	@Override
 	public void draw(Graphics canvas) {
-		canvas.drawArc(x, y, radios, radios, 0, 360);
-	}
-	public void setRad(int wi) {
-		this.radios=wi;
 		
+        canvas.drawArc(pos.x, pos.y,Math.abs(pos.x-lastPos.x),Math.abs(pos.y-lastPos.y), 0, 360);
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
 		
 	}
+	public void setLastPosition(Point position) {
+		lastPos=position;
+	}
+
 	int selectx,selecty,selectlastx,selectlasty;
 	public void setSelectionBounds(int x,int y, int w,int h) {
 		selectx=x;

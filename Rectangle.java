@@ -7,20 +7,22 @@ import java.util.Map;
 
 public class Rectangle extends ourshape{
 	private int posx,posy,wid,hie;
-	int x,y;
+	private int selectx,selecty,selectlastx,selectlasty;
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
-		x=position.x;
-		y=position.y;
+		posx=position.x;
+		System.out.println("pos x "+posx);
+		posy=position.y;
+		System.out.println("pos y "+posy);
 	}
 
 	@Override
 	public Point getPosition() {
 		// TODO Auto-generated method stub
 		Point ans =new Point();
-		ans.x=x;
-		ans.y=y;
+		ans.x=posx;
+		ans.y=posy;
 		return ans;
 	}
 
@@ -69,11 +71,43 @@ public class Rectangle extends ourshape{
 		return null;
 		
 	}
-	public void parm(int p1,int p2,int wi,int hi) {
-		this.posx=p1;
-		this.posy=p2;
+	public void setDim(int wi,int hi) {
 		this.wid=wi;
 		this.hie=hi;
 	}
-
+	public String val() {
+		return "Rectangle";
+	}
+	public void border(Graphics g) {
+		// TODO Auto-generated method stub
+		g.drawRect(this.posx-3,this.posy-3, 5, 5);
+		g.drawRect(this.posx+this.wid-3,this.posy-3 , 5, 5);
+		g.drawRect(this.posx-3,this.hie+this.posy-3, 5, 5);
+		g.drawRect(this.posx+this.wid-3,this.hie+this.posy-3, 5, 5);
+		g.drawRect((this.posx+this.wid/2)-3,(this.posy-3) , 5, 5);
+		g.drawRect((this.posx+this.wid/2)-3,(this.hie+this.posy-3) , 5, 5);
+		g.drawRect(this.posx-3,(this.posy+this.hie/2)-3 , 5, 5);
+		g.drawRect(this.posx+this.wid-3,(this.posy+this.hie/2)-3 , 5, 5);
+		
+	}
+	
+	public void setSelectionBounds(int x,int y, int w,int h) {
+		this.selectx=x;
+		this.selecty=y;
+		this.selectlastx=w;
+		this.selectlasty=h;
+	}
+	
+	public Point getval() {
+		Point w=new Point();
+		w.x=this.selectlastx;
+		w.y=this.selectlasty;
+		return w;
+	}
+	public Point getSelectionBounds() {
+		Point f=new Point();
+		f.x=this.selectx;
+		f.y=this.selecty;
+		return f;
+	}
 }
