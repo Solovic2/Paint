@@ -3,40 +3,38 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class drweng implements DrawingEngine {
-private Point posStart=new Point();
-private Point posEnd=new Point();
-private Point last;
 String num_of_shape;
 Rectangle r=new Rectangle();
 ourshape mainshape=new ourshape();
-ArrayList <String> shapes=new ArrayList<>();
+ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	@Override
 	public void refresh(Graphics canvas) {
-		// TODO Auto-generated method stub
-		
+//		canvas.clearRect(0, 0,2000,1500);
+//	
+//		for(int i=0;i<allShapes.size();i++) {
+//			Shape s=allShapes.get(i);
+////			System.out.println(allShapes);
+//			s.draw(canvas);
+//			
+//		}
 	}
 
 	@Override
 	public void addShape(Shape shape) {
-		posStart=shape.getPosition();
-		posEnd=this.getlastpost();
-		if(shape instanceof circle ) {
-			num_of_shape="1";
-		}else if(shape instanceof Rectangle ) {
-			num_of_shape="2";
-		}else if(shape instanceof Square ) {
-			num_of_shape="3";
-		}else if(shape instanceof Triangle ) {
-			num_of_shape="4";
-		}
-		
-		shapes.add(num_of_shape+","+posStart.x+","+posStart.y+","+posEnd.x+","+posEnd.y);
-		
-		System.out.println(shapes);
+//		System.out.println(shape);
+		allShapes.add(shape);
+//		System.out.println(allShapes);
+//		System.out.println("___"+allShapes.size());
 	}
 
 	@Override
@@ -78,48 +76,46 @@ ArrayList <String> shapes=new ArrayList<>();
 
 	@Override
 	public void save(String path) {
-		// TODO Auto-generated method stub
+//		path+=".xml";
+		try {
+			FileOutputStream fos= new FileOutputStream(new File(path));
+			XMLEncoder encoder=new XMLEncoder(fos);
+			encoder.writeObject(allShapes);
+			encoder.close();
+			fos.close();
+			for(int i=0;i<allShapes.size();i++) {
+				System.out.println(allShapes.get(i).getPosition());
+			}
+		}catch(IOException ex) {
+			ex.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public void load(String path) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void setlastpost(Point p) {
-		last=p;
-	}
-	public Point getlastpost() {
-		return last;
-	}
-//	public void redraw(Canvas canvse) {
-//		System.out.println("here we are111");
-//		Graphics g = canvse.getGraphics();
-//		int x,y,x2,y2,tempx,tempy;
-//		for(int i=0;i<shapes.size();i++) {
-//			String s=shapes.get(i);
-//			String[] in=s.split(",");
-//			x=Integer.valueOf(in[1]);
-//			y=Integer.valueOf(in[2]);
-//			x2=Integer.valueOf(in[3]);
-//			y2=Integer.valueOf(in[4]);
-//			if(s.charAt(0)=='1') {
-//				tempx=x;
-//				tempy=y;
-//				if(y2<y)tempy=y2;
-//	            if(x2<x)tempx=x2;
-//				double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-//    			int h=(int) Math.round(k);
-//				g.drawOval(tempx, tempy, h, h);
-//			}else if(s.charAt(0)=='2') {
-//
-//				g.drawRect(x, y, x2, y2);
+		allShapes.clear();
+		try {
+			FileInputStream fis= new FileInputStream(new File(path));
+			XMLDecoder decoder=new XMLDecoder(fis);
+			allShapes=((ArrayList<Shape>)decoder.readObject());
+			decoder.close();
+			fis.close();
+//			for(int i=0;i<allShapes.size();i++) {
+//				allShapes.get(i).getProperties();
+////				System.out.println(allShapes.get(i).getProperties());
+//				System.out.println("position"+allShapes.get(i).getPosition());
 //			}
-//			System.out.println(shapes);
-//
-//		}
-//	}
+		}catch(IOException ex) {
+			ex.printStackTrace();
+		}
+	}
 
+public void droow(Graphics canvas) {
+	for(int i=0;i<allShapes.size();i++) {
+		Shape s=allShapes.get(i);
+		s.draw(canvas);
+	}
+}
 
 }

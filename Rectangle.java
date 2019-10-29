@@ -3,36 +3,41 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Rectangle extends ourshape{
 	private int posx,posy,wid,hie;
-	int x,y;
+	Map<String, Double> Properties=new HashMap<String, Double>();
+	
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
-		x=position.x;
-		y=position.y;
+		posx=position.x;
+		posy=position.y;
 	}
 
 	@Override
 	public Point getPosition() {
 		// TODO Auto-generated method stub
 		Point ans =new Point();
-		ans.x=x;
-		ans.y=y;
+		ans.x=posx;
+		ans.y=posy;
 		return ans;
 	}
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		// TODO Auto-generated method stub
-		
+		Properties=properties;
+		wid=(int)Math.round(Properties.get("lastPositionx"));
+		hie=(int)Math.round(Properties.get("lastPositiony"));
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		// TODO Auto-generated method stub
+		if(!Properties.isEmpty()) {
+			return Properties;
+		}
 		return null;
 	}
 
@@ -69,9 +74,7 @@ public class Rectangle extends ourshape{
 		return null;
 		
 	}
-	public void parm(int p1,int p2,int wi,int hi) {
-		this.posx=p1;
-		this.posy=p2;
+	public void setDim(int wi,int hi) {
 		this.wid=wi;
 		this.hie=hi;
 	}
