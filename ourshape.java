@@ -66,5 +66,23 @@ private Point last;
 		return color ;
 		
 	}
+	public void setSelectionBounds(int x,int y, int w,int h) {
+
+	}
+	public Point  getSelectionBounds() {
+		return null;
+	}
+
+	public Point  getval() {
+		return null;
+	}
+
+	public void border(Graphics g) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 
 }
