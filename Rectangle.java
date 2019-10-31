@@ -1,20 +1,21 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Rectangle extends ourshape{
 	private int posx,posy,wid,hie;
-	Map<String, Double> Properties=new HashMap<String, Double>();
-	
+	private int selectx,selecty,selectlastx,selectlasty;
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
 		posx=position.x;
+		System.out.println("pos x "+posx);
 		posy=position.y;
+		System.out.println("pos y "+posy);
 	}
 
 	@Override
@@ -28,16 +29,13 @@ public class Rectangle extends ourshape{
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		Properties=properties;
-		wid=(int)Math.round(Properties.get("lastPositionx"));
-		hie=(int)Math.round(Properties.get("lastPositiony"));
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		if(!Properties.isEmpty()) {
-			return Properties;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -78,5 +76,57 @@ public class Rectangle extends ourshape{
 		this.wid=wi;
 		this.hie=hi;
 	}
-
+	public String val() {
+		return "Rectangle";
+	}
+	public void border(Graphics g) {
+		// TODO Auto-generated method stub
+		g.drawRect(this.posx-3,this.posy-3, 5, 5);
+		g.drawRect(this.posx+this.wid-3,this.posy-3 , 5, 5);
+		g.drawRect(this.posx-3,this.hie+this.posy-3, 5, 5);
+		g.drawRect(this.posx+this.wid-3,this.hie+this.posy-3, 5, 5);
+		g.drawRect((this.posx+this.wid/2)-3,(this.posy-3) , 5, 5);
+		g.drawRect((this.posx+this.wid/2)-3,(this.hie+this.posy-3) , 5, 5);
+		g.drawRect(this.posx-3,(this.posy+this.hie/2)-3 , 5, 5);
+		g.drawRect(this.posx+this.wid-3,(this.posy+this.hie/2)-3 , 5, 5);
+		
+	}
+	
+	public void setSelectionBounds(int x,int y, int w,int h) {
+		this.selectx=x;
+		this.selecty=y;
+		this.selectlastx=w;
+		this.selectlasty=h;
+	}
+	
+	public Point getval() {
+		Point w=new Point();
+		w.x=this.selectlastx;
+		w.y=this.selectlasty;
+		return w;
+	}
+	public Point getSelectionBounds() {
+		Point f=new Point();
+		f.x=this.selectx;
+		f.y=this.selecty;
+		return f;
+	}
+	public String shaptype(){
+		return null;
+	}
+	public boolean isIn(int x,int y,Canvas canvse) {
+		 if(x> this.selectx&&x<this.selectx+this.selectlastx && y>this.selecty&&y<this.selectlasty+this.selecty) {
+			Graphics g=canvse.getGraphics();
+				g.drawRect(this.posx-3,this.posy-3, 5, 5);
+				g.drawRect(this.posx+this.wid-3,this.posy-3 , 5, 5);
+				g.drawRect(this.posx-3,this.hie+this.posy-3, 5, 5);
+				g.drawRect(this.posx+this.wid-3,this.hie+this.posy-3, 5, 5);
+				g.drawRect((this.posx+this.wid/2)-3,(this.posy-3) , 5, 5);
+				g.drawRect((this.posx+this.wid/2)-3,(this.hie+this.posy-3) , 5, 5);
+				g.drawRect(this.posx-3,(this.posy+this.hie/2)-3 , 5, 5);
+				g.drawRect(this.posx+this.wid-3,(this.posy+this.hie/2)-3 , 5, 5);	
+			 return true;
+		 }
+		return false;
+	}
 }

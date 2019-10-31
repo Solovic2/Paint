@@ -1,16 +1,18 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ellipse extends ourshape {
 	Point pos =new Point();
 	Point lastPos =new Point();
+	int radios;
 	Color c=Color.black;
-	Map<String, Double> Properties=new HashMap<String, Double>();
+	int width;
+	int height;
 	
 	public java.awt.Point getPosition(){
 		
@@ -24,16 +26,13 @@ public class ellipse extends ourshape {
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		Properties=properties;
-		lastPos.x=(int)Math.round(Properties.get("lastPositionx"));
-		lastPos.y=(int)Math.round(Properties.get("lastPositiony"));
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		if(!Properties.isEmpty()) {
-			return Properties;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -62,7 +61,7 @@ public class ellipse extends ourshape {
 	@Override
 	public void draw(Graphics canvas) {
 		
-        canvas.drawArc(pos.x, pos.y,Math.abs(pos.x-lastPos.x),Math.abs(pos.y-lastPos.y), 0, 360);
+        canvas.drawArc(pos.x, pos.y,width,height, 0, 360);
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
@@ -70,5 +69,46 @@ public class ellipse extends ourshape {
 	}
 	public void setLastPosition(Point position) {
 		lastPos=position;
+		width=Math.abs(pos.x-lastPos.x);
+		height=Math.abs(pos.y-lastPos.y);
+	}
+
+	int selectx,selecty,selectlastx,selectlasty;
+	public void setSelectionBounds(int x,int y, int w,int h) {
+		selectx=x;
+		selecty=y;
+		selectlastx=w;
+		selectlasty=h;
+	}
+	
+	public Point getval() {
+		Point w=new Point();
+		w.x=selectlastx;
+		w.y=selectlasty;
+		return w;
+	}
+	public Point getSelectionBounds() {
+		Point f=new Point();
+		f.x=selectx;
+		f.y=selecty;
+		return f;
+	}
+	public String shaptype(){
+		return null;
+	}
+	public boolean isIn(int x,int y,Canvas canvse) {
+		 if(x> this.selectx&&x<this.selectx+this.selectlastx && y>this.selecty&&y<this.selectlasty+this.selecty) {
+			Graphics g=canvse.getGraphics();
+			g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
+			g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
+			g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);		
+			 return true;
+		 }
+		return false;
 	}
 }

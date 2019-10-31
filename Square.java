@@ -1,16 +1,16 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.Map;
 
-public class Square implements Shape {
-
+public class Square extends ourshape {
+Color c;
 	private int posx,posy,wid,hie;
-	Map<String, Double> Properties=new HashMap<String, Double>();
-	
+	int selectx,selecty,selectlastx,selectlasty;
+
 	@Override
 	public void setPosition(Point position) {
 		// TODO Auto-generated method stub
@@ -29,30 +29,28 @@ public class Square implements Shape {
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		Properties=properties;
-		wid=(int)Math.round(Properties.get("lastPositionx"));
-		hie=(int)Math.round(Properties.get("lastPositiony"));
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		if(!Properties.isEmpty()) {
-			return Properties;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setColor(Color color) {
 		// TODO Auto-generated method stub
+		c=color;
 		
 	}
 
 	@Override
 	public Color getColor() {
 		// TODO Auto-generated method stub
-		return null;
+		
+		return c;
 	}
 
 	@Override
@@ -70,6 +68,7 @@ public class Square implements Shape {
 	@Override
 	public void draw(Graphics canvas) {
 		canvas.drawRect(this.posx, this.posy, this.wid, this.hie);
+		System.out.println(" here is square "+posx+" "+posy+" "+wid+" "+hie);
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return null;
@@ -78,6 +77,43 @@ public class Square implements Shape {
 	public void setDim(int wi,int hi) {
 		this.wid=wi;
 		this.hie=hi;
+	}
+	public void setSelectionBounds(int x,int y, int w,int h) {
+		selectx=x;
+		selecty=y;
+		selectlastx=w;
+		selectlasty=h;
+		System.out.println("Ds");
+	}
+	public Point getSelectionBounds() {
+		Point f=new Point();
+		f.x=selectx;
+		f.y=selecty;
+		return f;
+	}
+	public Point getval() {
+		Point w=new Point();
+		w.x=selectlastx;
+		w.y=selectlasty;
+		return w;
+	}
+	public String shaptype(){
+		return null;
+	}
+	public boolean isIn(int x,int y,Canvas canvse) {
+		 if(x> this.selectx&&x<this.selectx+this.selectlastx && y>this.selecty&&y<this.selectlasty+this.selecty) {
+			Graphics g=canvse.getGraphics();
+				g.drawRect(this.posx-3,this.posy-3, 5, 5);
+				g.drawRect(this.posx+this.wid-3,this.posy-3 , 5, 5);
+				g.drawRect(this.posx-3,this.hie+this.posy-3, 5, 5);
+				g.drawRect(this.posx+this.wid-3,this.hie+this.posy-3, 5, 5);
+				g.drawRect((this.posx+this.wid/2)-3,(this.posy-3) , 5, 5);
+				g.drawRect((this.posx+this.wid/2)-3,(this.hie+this.posy-3) , 5, 5);
+				g.drawRect(this.posx-3,(this.posy+this.hie/2)-3 , 5, 5);
+				g.drawRect(this.posx+this.wid-3,(this.posy+this.hie/2)-3 , 5, 5);	
+			 return true;
+		 }
+		return false;
 	}
 
 }

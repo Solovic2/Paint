@@ -3,30 +3,28 @@ package eg.edu.alexu.csd.oop.draw;
 import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class drweng implements DrawingEngine {
 String num_of_shape;
 Rectangle r=new Rectangle();
 ourshape mainshape=new ourshape();
 ArrayList <Shape> allShapes=new ArrayList<Shape>();
+Stack<ArrayList<Shape>> st=new Stack<ArrayList<Shape>>();
+Stack<ArrayList<Shape>> stRedo=new Stack<ArrayList<Shape>>();
+boolean firstUndo=true;
 	@Override
 	public void refresh(Graphics canvas) {
-//		canvas.clearRect(0, 0,2000,1500);
-//	
-//		for(int i=0;i<allShapes.size();i++) {
-//			Shape s=allShapes.get(i);
-////			System.out.println(allShapes);
-//			s.draw(canvas);
-//			
-//		}
+		// TODO Auto-generated method stub
+		for(int i=0;i<allShapes.size();i++) {
+			Shape s=allShapes.get(i);
+//			System.out.println(allShapes.size());
+			s.draw(canvas);	
+	
+		}
+		
 	}
 
 	@Override
@@ -40,7 +38,13 @@ ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	@Override
 	public void removeShape(Shape shape) {
 		// TODO Auto-generated method stub
-		
+		for(int i=0;i<allShapes.size();i++) {
+			if(allShapes.get(i).getPosition().x==shape.getPosition().x) {
+				allShapes.remove(i);
+				System.out.println(i+" "+allShapes);
+				
+			}
+		}
 	}
 
 	@Override
@@ -52,8 +56,7 @@ ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	@Override
 	public Shape[] getShapes() {
 		// TODO Auto-generated method stub
-
-	return null;
+	return (Shape[]) allShapes.toArray();
 	}
 
 	@Override
@@ -66,56 +69,49 @@ ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	public void undo() {
 		// TODO Auto-generated method stub
 		
+		allShapes.clear();
+		if(st.isEmpty()) {
+			
+		}else {
+		stRedo.add(st.peek());
+		allShapes.addAll(st.pop());
+		}
 	}
 
 	@Override
 	public void redo() {
 		// TODO Auto-generated method stub
+		allShapes.clear();
+		st.add(stRedo.peek());
+		allShapes.addAll(stRedo.pop());
 		
 	}
 
 	@Override
 	public void save(String path) {
-//		path+=".xml";
-		try {
-			FileOutputStream fos= new FileOutputStream(new File(path));
-			XMLEncoder encoder=new XMLEncoder(fos);
-			encoder.writeObject(allShapes);
-			encoder.close();
-			fos.close();
-			for(int i=0;i<allShapes.size();i++) {
-				System.out.println(allShapes.get(i).getPosition());
-			}
-		}catch(IOException ex) {
-			ex.printStackTrace();
-		}
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void load(String path) {
-		allShapes.clear();
-		try {
-			FileInputStream fis= new FileInputStream(new File(path));
-			XMLDecoder decoder=new XMLDecoder(fis);
-			allShapes=((ArrayList<Shape>)decoder.readObject());
-			decoder.close();
-			fis.close();
-//			for(int i=0;i<allShapes.size();i++) {
-//				allShapes.get(i).getProperties();
-////				System.out.println(allShapes.get(i).getProperties());
-//				System.out.println("position"+allShapes.get(i).getPosition());
-//			}
-		}catch(IOException ex) {
-			ex.printStackTrace();
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
 public void droow(Graphics canvas) {
 	for(int i=0;i<allShapes.size();i++) {
 		Shape s=allShapes.get(i);
+//		System.out.println(allShapes);
+		
+
 		s.draw(canvas);
+		
+		
 	}
 }
-
+public void border(Graphics g) {
+	
+	
+}
 }

@@ -1,17 +1,16 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.Map;
 
 public class circle extends ourshape {
 
-	int x,y, x2,y2;
+	int x,y;
 	int radios;
 	Color c=Color.black;
-	Map<String, Double> Properties=new HashMap<String, Double>();
 	
 	public java.awt.Point getPosition(){
 		Point ans =new Point();
@@ -28,19 +27,13 @@ public class circle extends ourshape {
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		Properties=properties;
-		x2=(int)Math.round(Properties.get("lastPositionx"));
-		y2=(int)Math.round(Properties.get("lastPositiony"));
-		double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-		radios=(int) Math.round(k);
-
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		if(!Properties.isEmpty()) {
-			return Properties;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -70,17 +63,47 @@ public class circle extends ourshape {
 	public void draw(Graphics canvas) {
 		canvas.drawArc(x, y, radios, radios, 0, 360);
 	}
-	
-	public void setDim(Point wi) {
-		x2=wi.x;
-		y2=wi.y;
-		double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-		radios=(int) Math.round(k);
-		
+	public void setRad(int wi) {
+		this.radios=wi;
 		
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
 		
+	}
+	int selectx,selecty,selectlastx,selectlasty;
+	public void setSelectionBounds(int x,int y, int w,int h) {
+		selectx=x;
+		selecty=y;
+		selectlastx=w;
+		selectlasty=h;
+	}
+	
+	public Point getval() {
+		Point w=new Point();
+		w.x=selectlastx;
+		w.y=selectlasty;
+		return w;
+	}
+	public Point getSelectionBounds() {
+		Point f=new Point();
+		f.x=selectx;
+		f.y=selecty;
+		return f;
+	}
+	public boolean isIn(int x,int y,Canvas canvse) {
+		 if(x> this.selectx&&x<this.selectx+this.selectlastx && y>this.selecty&&y<this.selectlasty+this.selecty) {
+			Graphics g=canvse.getGraphics();
+			g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
+			g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
+			g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+			 return true;
+		 }
+		return false;
 	}
 }

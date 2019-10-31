@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -66,5 +67,23 @@ private Point last;
 		return color ;
 		
 	}
+	public void setSelectionBounds(int x,int y, int w,int h) {
+
+	}
+	public Point  getSelectionBounds() {
+		return null;
+	}
+
+	public Point  getval() {
+		return null;
+	}
+
+	public String shaptype(){
+		return null;
+	}
+	public boolean isIn(int x,int y,Canvas canvse) {
+		return false;
+	}
+
 
 }
