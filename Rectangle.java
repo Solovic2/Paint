@@ -110,4 +110,7 @@ public class Rectangle extends ourshape{
 		f.y=this.selecty;
 		return f;
 	}
+	public String shaptype(){
+		return null;
+	}
 }

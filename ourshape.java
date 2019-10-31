@@ -82,7 +82,9 @@ private Point last;
 		
 	}
 
-
+public String shaptype(){
+	return null;
+}
 
 
 }

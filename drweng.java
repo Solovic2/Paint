@@ -5,12 +5,16 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class drweng implements DrawingEngine {
 String num_of_shape;
 Rectangle r=new Rectangle();
 ourshape mainshape=new ourshape();
 ArrayList <Shape> allShapes=new ArrayList<Shape>();
+Stack<ArrayList<Shape>> st=new Stack<ArrayList<Shape>>();
+Stack<ArrayList<Shape>> stRedo=new Stack<ArrayList<Shape>>();
+boolean firstUndo=true;
 	@Override
 	public void refresh(Graphics canvas) {
 		// TODO Auto-generated method stub
@@ -34,7 +38,13 @@ ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	@Override
 	public void removeShape(Shape shape) {
 		// TODO Auto-generated method stub
-		
+		for(int i=0;i<allShapes.size();i++) {
+			if(allShapes.get(i).getPosition().x==shape.getPosition().x) {
+				allShapes.remove(i);
+				System.out.println(i+" "+allShapes);
+				
+			}
+		}
 	}
 
 	@Override
@@ -46,8 +56,7 @@ ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	@Override
 	public Shape[] getShapes() {
 		// TODO Auto-generated method stub
-
-	return null;
+	return (Shape[]) allShapes.toArray();
 	}
 
 	@Override
@@ -60,11 +69,21 @@ ArrayList <Shape> allShapes=new ArrayList<Shape>();
 	public void undo() {
 		// TODO Auto-generated method stub
 		
+		allShapes.clear();
+		if(st.isEmpty()) {
+			
+		}else {
+		stRedo.add(st.peek());
+		allShapes.addAll(st.pop());
+		}
 	}
 
 	@Override
 	public void redo() {
 		// TODO Auto-generated method stub
+		allShapes.clear();
+		st.add(stRedo.peek());
+		allShapes.addAll(stRedo.pop());
 		
 	}
 

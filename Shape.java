@@ -1,5 +1,7 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Graphics;
+
 public interface Shape{
 
     public void setPosition(java.awt.Point position);

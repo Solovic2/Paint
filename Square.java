@@ -107,6 +107,8 @@ Color c;
 		w.y=selectlasty;
 		return w;
 	}
-
+	public String shaptype(){
+		return null;
+	}
 
 }

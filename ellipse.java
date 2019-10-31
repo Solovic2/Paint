@@ -10,6 +10,8 @@ public class ellipse extends ourshape {
 	Point lastPos =new Point();
 	int radios;
 	Color c=Color.black;
+	int width;
+	int height;
 	
 	public java.awt.Point getPosition(){
 		
@@ -58,7 +60,7 @@ public class ellipse extends ourshape {
 	@Override
 	public void draw(Graphics canvas) {
 		
-        canvas.drawArc(pos.x, pos.y,Math.abs(pos.x-lastPos.x),Math.abs(pos.y-lastPos.y), 0, 360);
+        canvas.drawArc(pos.x, pos.y,width,height, 0, 360);
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
@@ -66,6 +68,8 @@ public class ellipse extends ourshape {
 	}
 	public void setLastPosition(Point position) {
 		lastPos=position;
+		width=Math.abs(pos.x-lastPos.x);
+		height=Math.abs(pos.y-lastPos.y);
 	}
 
 	int selectx,selecty,selectlastx,selectlasty;
@@ -98,5 +102,8 @@ public class ellipse extends ourshape {
 		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
 		g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
 		g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+	}
+	public String shaptype(){
+		return null;
 	}
 }

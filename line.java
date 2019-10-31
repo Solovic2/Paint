@@ -9,6 +9,8 @@ public class line extends ourshape{
 	Point pos=new Point();
 	Point lpos=new Point();
 	Color c=Color.black;
+	int width;
+	int height;
 	
 	public java.awt.Point getPosition(){
 		return pos;
@@ -55,7 +57,7 @@ public class line extends ourshape{
 
 	@Override
 	public void draw(Graphics canvas) {
-		canvas.drawLine(pos.x,pos.y,lpos.x,lpos.y);
+		canvas.drawLine(pos.x,pos.y,pos.x-width,pos.y-height);
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
@@ -63,6 +65,8 @@ public class line extends ourshape{
 	}
 	public void setLastPosition(Point position) {
 		lpos=position;
+		width=pos.x-lpos.x;
+		height=pos.y-lpos.y;
 	}
 	int selectx,selecty,selectlastx,selectlasty;
 	public void setSelectionBounds(int x,int y, int w,int h) {
@@ -94,5 +98,8 @@ public class line extends ourshape{
 		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
 		g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
 		g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+	}
+	public String shaptype(){
+		return "Line";
 	}
 }
