@@ -10,6 +10,9 @@ public class Square implements Shape {
 
 	private int posx,posy,wid,hie;
 	Map<String, Double> Properties=new HashMap<String, Double>();
+	Color c=Color.black;
+	Color fillColor=Color.white;
+	
 	
 	@Override
 	public void setPosition(Point position) {
@@ -45,30 +48,35 @@ public class Square implements Shape {
 
 	@Override
 	public void setColor(Color color) {
-		// TODO Auto-generated method stub
+		c=color;
 		
 	}
 
 	@Override
 	public Color getColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return c;
 	}
 
 	@Override
 	public void setFillColor(Color color) {
-		// TODO Auto-generated method stub
+		fillColor=color;
+		
 		
 	}
 
 	@Override
 	public Color getFillColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return fillColor;
 	}
 
 	@Override
 	public void draw(Graphics canvas) {
+		
+		if(fillColor.getRGB()!=-1) {
+			canvas.setColor(fillColor);
+			canvas.fillRect(this.posx, this.posy,this.wid,  this.hie);
+		}
+		canvas.setColor(c);
 		canvas.drawRect(this.posx, this.posy, this.wid, this.hie);
 	}
 	public Object clone() throws CloneNotSupportedException{

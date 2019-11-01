@@ -10,6 +10,7 @@ public class ellipse extends ourshape {
 	Point pos =new Point();
 	Point lastPos =new Point();
 	Color c=Color.black;
+	Color fillColor=Color.white;
 	Map<String, Double> Properties=new HashMap<String, Double>();
 	
 	public java.awt.Point getPosition(){
@@ -49,19 +50,24 @@ public class ellipse extends ourshape {
 
 	@Override
 	public void setFillColor(Color color) {
-		// TODO Auto-generated method stub
+		fillColor=color;
 		
 	}
 
 	@Override
 	public Color getFillColor() {
 		// TODO Auto-generated method stub
-		return null;
+		return fillColor;
 	}
 
 	@Override
 	public void draw(Graphics canvas) {
 		
+		if(fillColor.getRGB()!=-1) {
+			canvas.setColor(fillColor);
+			canvas.fillArc(pos.x, pos.y, Math.abs(pos.x-lastPos.x), Math.abs(pos.y-lastPos.y), 0, 360);
+		}
+		canvas.setColor(c);
         canvas.drawArc(pos.x, pos.y,Math.abs(pos.x-lastPos.x),Math.abs(pos.y-lastPos.y), 0, 360);
 	}
 	public Object clone() throws CloneNotSupportedException{

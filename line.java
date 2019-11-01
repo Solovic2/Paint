@@ -9,7 +9,7 @@ import java.util.Map;
 public class line extends ourshape{
 	Point pos=new Point();
 	Point lpos=new Point();
-	Color c;
+	Color c=Color.black;
 	Map<String, Double> Properties=new HashMap<String, Double>();
 	
 	@Override
@@ -62,6 +62,7 @@ public class line extends ourshape{
 
 	@Override
 	public void draw(Graphics canvas) {
+		canvas.setColor(c);
 		canvas.drawLine(pos.x,pos.y,lpos.x,lpos.y);
 	}
 	@Override

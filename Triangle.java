@@ -9,6 +9,8 @@ import java.util.Map;
 public class Triangle extends ourshape{
 	private int posx,posy,wid,hie;
 	Map<String, Double> Properties=new HashMap<String, Double>();
+	Color c=Color.black;
+	Color fillColor=Color.white;
 	
 	@Override
 	public void setPosition(Point position) {
@@ -43,35 +45,48 @@ public class Triangle extends ourshape{
 
 	@Override
 	public void setColor(Color color) {
-		// TODO Auto-generated method stub
-		
+		c=color;
 	}
 
 	@Override
 	public Color getColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return c;
 	}
 
 	@Override
 	public void setFillColor(Color color) {
-		// TODO Auto-generated method stub
-		
+		fillColor=color;
 	}
 
 	@Override
 	public Color getFillColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return fillColor;
 	}
 
 	@Override
 	public void draw(Graphics canvas) {
+		
 		if(posx>wid) {
+			if(fillColor.getRGB()!=-1) {
+				canvas.setColor(fillColor);
+				int x1=posx,x2=wid,x3=this.posx+Math.abs(this.posx-this.wid),y1=posy,y2=hie,y3=hie;
+				int[] xs= {x1,x2,x3};
+				int[] ys= {y1,y2,y3};
+				canvas.fillPolygon(xs, ys, 3);
+			}
+		canvas.setColor(c);
 		canvas.drawLine(this.posx, this.posy, this.wid, this.hie);
 		canvas.drawLine(this.wid, this.hie,this.posx+Math.abs(this.posx-this.wid),this.hie);
 		canvas.drawLine(this.posx+Math.abs(this.posx-this.wid),this.hie,this.posx,this.posy);
 		}else if(posx<wid) {
+			if(fillColor.getRGB()!=-1) {
+				canvas.setColor(fillColor);
+				int x1=posx,x2=wid,x3=this.posx-Math.abs(this.posx-this.wid),y1=posy,y2=hie,y3=hie;
+				int[] xs= {x1,x2,x3};
+				int[] ys= {y1,y2,y3};
+				canvas.fillPolygon(xs, ys, 3);
+			}
+			canvas.setColor(c);
 			canvas.drawLine(this.posx, this.posy, this.wid, this.hie);
 			canvas.drawLine(this.wid, this.hie,this.posx-Math.abs(this.posx-this.wid),this.hie);
 			canvas.drawLine(this.posx-Math.abs(this.posx-this.wid),this.hie,this.posx,this.posy);

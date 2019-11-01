@@ -9,40 +9,20 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.FileFilter;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-
-import javax.swing.SpringLayout;
-import javax.swing.BoxLayout;
-import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.CardLayout;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-
-import java.awt.Choice;
-import java.awt.ComponentOrientation;
-import javax.swing.JList;
+import javax.swing.JMenu;
 import java.awt.event.MouseAdapter;
-import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Painter {
@@ -54,11 +34,13 @@ public class Painter {
 	int numOfShape=0;
 	Color color=Color.black;
 	Color fillColor=Color.white;
+	boolean isfilled=false;
 	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -90,23 +72,23 @@ public class Painter {
         Canvas canvse =new Canvas();
         canvse.setBackground(Color.WHITE);
         canvse.setSize(1924, 855);
-        canvse.setLocation(0, 200);
+        canvse.setLocation(0, 206);
         canvse.setPreferredSize(new Dimension(2000,1500));
         canvse.setMaximumSize(new Dimension(2000,1500));
         canvse.setMinimumSize(new Dimension(2000,1500));
         frame.getContentPane().add(canvse);
-
+        
         JPanel panel = new JPanel();
         panel.setBackground(Color.GRAY);
         panel.setAutoscrolls(true);
         panel.setIgnoreRepaint(true);
         panel.setForeground(Color.BLACK);
-        panel.setBounds(0, 0, 1924, 200);
+        panel.setBounds(-33, 0, 1924, 200);
         frame.getContentPane().add(panel);
         panel.setLayout(null);
         
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBounds(0, 0, 1924, 25);
+        menuBar.setBounds(0, 0, 1371, 25);
         panel.add(menuBar);
         
         JMenuItem mntmNewMenuItem = new JMenuItem("File");
@@ -126,7 +108,19 @@ public class Painter {
         		if(response==JFileChooser.APPROVE_OPTION) {
         			String fileName;
         			fileName=fc.getSelectedFile().toString();
-        			dg.save(fileName);
+        			
+        			try {
+        				String ss=fileName.substring(fileName.length()-4);
+        				if(ss.equals(".xml")||ss.equals("json")) {
+        					dg.save(fileName);
+        					System.out.println("correct path");
+        				}else {
+        					System.out.println("false location");
+        				}
+        			}catch(ArrayIndexOutOfBoundsException e) {
+        				System.out.println("false location111");
+        			}
+        			
         		}
         	}
         });
@@ -148,7 +142,18 @@ public class Painter {
         		if(response==JFileChooser.APPROVE_OPTION) {
         			String fileName;
         			fileName=fc.getSelectedFile().toString();
-        			dg.load(fileName);  			
+        			try {
+        				String ss=fileName.substring(fileName.length()-4);
+        				if(ss.equals(".xml")||ss.equals("json")) {
+        					dg.load(fileName); 
+        					System.out.println("correct path");
+        				}else {
+        					System.out.println("false location");
+        				}
+        			}catch(ArrayIndexOutOfBoundsException e) {
+        				System.out.println("false location111");
+        			}
+        			 			
         		}
         		dg.droow(g);
         	}
@@ -157,7 +162,7 @@ public class Painter {
         menuBar.add(mntmNewMenuItem_3);
         
         JPanel panel_1 = new JPanel();
-        panel_1.setBounds(96, 39, 309, 118);
+        panel_1.setBounds(96, 39, 548, 127);
         panel.add(panel_1);
         panel_1.setLayout(null);
 
@@ -199,15 +204,23 @@ public class Painter {
                     if(Math.abs(x2-x)>Math.abs(y2-y)) {psx=Math.abs(x2-x);}
                     else {psx=Math.abs(y2-y);}
                     Graphics g = canvse.getGraphics();
+                    g.setColor(color);
+                    sq.setColor(color);
+                    if(isfilled) {
+                    	sq.setFillColor(fillColor);
+                    }
                     sq.setDim(psx,psx);
                     sq.setPosition(temp);
         			dg.addShape(sq);
         			dg.droow(g);
         			Map<String,Double> m=new HashMap<>();
+        			m.put("type",1.0);
 	    			m.put("positionx", temp.getX());
 	    			m.put("positiony", temp.getY());
 	    			m.put("lastPositionx",(double)psx);
 	    			m.put("lastPositiony",(double) psx);
+	    			m.put("color",(double)color.getRGB());
+	    			m.put("fillColor",(double)fillColor.getRGB());
 	    			sq.setProperties(m);
         			canvse.removeMouseListener(this);
         			canvse.removeMouseMotionListener(mx);
@@ -218,6 +231,7 @@ public class Painter {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				Graphics g = canvse.getGraphics();
+				g.setColor(color);
 				Point temp=new Point ();
 				temp.x=x;
 				temp.y=y;
@@ -228,6 +242,9 @@ public class Painter {
                 mx=this;
                 if(Math.abs(x2-x)>Math.abs(y2-y)) {psx=Math.abs(x2-x);}
                 else {psx=Math.abs(y2-y);}
+                if(isfilled) {
+                	g.fillRect(temp.x, temp.y, psx, psx);
+                }
                 g.drawRect(temp.x,temp.y,psx, psx);
     			canvse.repaint();
     			dg.droow(g);
@@ -260,7 +277,6 @@ public class Painter {
 
 					@Override
 					public void mousePressed(MouseEvent e) {
-						// TODO Auto-generated method stub
 						x = e.getX();
 	                     y = e.getY();
 					}
@@ -276,16 +292,24 @@ public class Painter {
 	                    if(y2<y)temp.y=y2;
 	                    if(x2<x)temp.x=x2;
 	                    Graphics g = canvse.getGraphics();
+	                    g.setColor(color);
+	                    r.setColor(color);
+	                    if(isfilled) {
+	                    	r.setFillColor(fillColor);
+	                    }
 	                    r.setDim(Math.abs(x-x2), Math.abs(y-y2));
 	                    r.setPosition(temp);
 	        			dg.addShape(r);
 	        			r.draw(g);
 	        			dg.droow(g);
 	        			Map<String,Double> m=new HashMap<>();
+	        			m.put("type",2.0);
 		    			m.put("positionx", temp.getX());
 		    			m.put("positiony", temp.getY());
 		    			m.put("lastPositionx",(double)Math.abs(x-x2));
 		    			m.put("lastPositiony",(double) Math.abs(y-y2));
+		    			m.put("color",(double)color.getRGB());
+		    			m.put("fillColor",(double)fillColor.getRGB());
 		    			r.setProperties(m);
 	        			canvse.removeMouseListener(this);
 	        			canvse.removeMouseMotionListener(mx);
@@ -296,6 +320,7 @@ public class Painter {
 				@Override
 				public void mouseDragged(MouseEvent e) {
 					Graphics g = canvse.getGraphics();
+					g.setColor(color);
 					Point temp=new Point ();
 					temp.x=x;
 					temp.y=y;
@@ -304,6 +329,9 @@ public class Painter {
                     if(y2<y)temp.y=y2;
                     if(x2<x)temp.x=x2;
                     mx=this;
+                    if(isfilled) {
+	                	g.fillRect(temp.x, temp.y, Math.abs(x-x2), Math.abs(y-y2));
+	                }
                     g.drawRect(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
         			canvse.repaint();
         			dg.droow(g);
@@ -352,16 +380,26 @@ public class Painter {
 	        			hr.x=x2;
 	        			hr.y=y2;
 	                    Graphics g = canvse.getGraphics();
+	                    g.setColor(color);
+	                    t.setColor(color);
+	                    if(isfilled) {
+	                    	t.setFillColor(fillColor);
+	                    	
+	                    }
 	                    t.setDim(x2,y2);
 	                    t.setPosition(temp);
 	        			dg.addShape(t);
 	        			t.draw(g);
 	        			dg.droow(g);
 	        			Map<String,Double> m=new HashMap<>();
+	        			
+	        			m.put("type",3.0);
 		    			m.put("positionx", temp.getX());
 		    			m.put("positiony", temp.getY());
 		    			m.put("lastPositionx",(double)x2);
 		    			m.put("lastPositiony",(double) y2);
+		    			m.put("color",(double)color.getRGB());
+		    			m.put("fillColor",(double)fillColor.getRGB());
 		    			t.setProperties(m);
 	        			canvse.removeMouseListener(this);
 	        			canvse.removeMouseMotionListener(mx);
@@ -372,6 +410,7 @@ public class Painter {
 				@Override
 				public void mouseDragged(MouseEvent e) {
 					Graphics g = canvse.getGraphics();
+					g.setColor(color);
 					Point temp=new Point ();
 					temp.x=x;
 					temp.y=y;
@@ -379,10 +418,22 @@ public class Painter {
                     y2 = e.getY();
                     mx=this;
                     if(temp.x>x2) {
+                    	if(isfilled) {
+	                    	int f1=temp.x,f2=x2,f3=temp.x+Math.abs(temp.x-x2),z1=temp.y,z2=y2,z3=y2;
+	        				int[] xs= {f1,f2,f3};
+	        				int[] ys= {z1,z2,z3};
+	        				g.fillPolygon(xs, ys, 3);
+	                    }
                 		g.drawLine(temp.x, temp.y, x2,y2);
                 		g.drawLine(x2,y2,temp.x+Math.abs(temp.x-x2),y2);
                 		g.drawLine(temp.x+Math.abs(temp.x-x2),y2,temp.x,temp.y);
                 		}else if(temp.x<x2) {
+                			if(isfilled) {
+    	                    	int f1=temp.x,f2=x2,f3=temp.x-Math.abs(temp.x-x2),z1=temp.y,z2=y2,z3=y2;
+    	        				int[] xs= {f1,f2,f3};
+    	        				int[] ys= {z1,z2,z3};
+    	        				g.fillPolygon(xs, ys, 3);
+    	                    }
                 			g.drawLine(temp.x, temp.y, x2, y2);
                 			g.drawLine(x2, y2,temp.x-Math.abs(temp.x-x2),y2);
                 			g.drawLine(temp.x-Math.abs(temp.x-x2),y2,temp.x,temp.y);
@@ -428,19 +479,28 @@ public class Painter {
 	                    if(x2<x){temp.x=x2;x2=x;}
 	                    c.setPosition(temp);
 	                    Graphics g = canvse.getGraphics();
-	                	
+	                    g.setColor(color);
+	                    c.setColor(color);
+	                    if(isfilled) {
+	                    	c.setFillColor(fillColor);
+	                    }
 	        			Point hr =new Point();
 	        			hr.x=x2;
 	        			hr.y=y2;
 	        			dg.addShape(c);
-	        			c.setDim(hr);
-	        			dg.droow(g);
+//	        			c.setDim(hr);
+	        			
 	        			Map<String,Double> m=new HashMap<>();
+	        			m.put("type",4.0);
 		    			m.put("positionx", temp.getX());
 		    			m.put("positiony", temp.getY());
 		    			m.put("lastPositionx",(double)x2);
 		    			m.put("lastPositiony",(double) y2);
+		    			m.put("color",(double)color.getRGB());
+		    			m.put("fillColor",(double)fillColor.getRGB());
+		    			System.out.println(m);
 		    			c.setProperties(m);
+		    			dg.droow(g);
 	        			canvse.removeMouseListener(this);
 	        			canvse.removeMouseMotionListener(mx);
 					}
@@ -450,6 +510,7 @@ public class Painter {
 					@Override
 					public void mouseDragged(MouseEvent e) {
 						Graphics g = canvse.getGraphics();
+						g.setColor(color);
 						Point temp=new Point ();
 						temp.x=x;
 						temp.y=y;
@@ -459,6 +520,9 @@ public class Painter {
 	                    if(x2<x)temp.x=x2;
 	                	double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
 	        			int h=(int) Math.round(k);
+	        			if(isfilled) {
+	 	                	g.fillArc(temp.x,temp.y,h,h, 0, 360);
+	 	                }
 	        			g.drawArc(temp.x, temp.y, h, h, 0, 360);
 	        			canvse.repaint();
 	        			dg.droow(g);
@@ -569,11 +633,54 @@ public class Painter {
         line.setBounds(75, 62, 67, 24);
         panel_1.add(line);
         
-//        JButton btnColors = new JButton("colors");
-//        btnColors.addActionListener(new ButtonListener());
-//        btnColors.setBounds(168, 2, 89, 23);
-//        panel_1.add(btnColors);
+      
+        JMenuBar mb = new JMenuBar();
+        mb.setBackground(Color.WHITE);
+        mb.setBounds(168, 2, 40, 25);
+        panel_1.add(mb);
         
+        // create a menu 
+        JMenu   x = new JMenu("color");
+        mb.add(x);
+        
+              // create menuitems 
+              JMenuItem m1 = new JMenuItem(" ");
+              m1.addMouseListener(new MouseAdapter() {
+              	@Override
+              	public void mousePressed(MouseEvent e) {
+              		color=Color.red;
+              		fillColor=Color.red;
+              		isfilled=true;
+              	}
+              });
+              m1.setBackground(Color.RED);
+              JMenuItem  m2 = new JMenuItem(" "); 
+              m2.addMouseListener(new MouseAdapter() {
+              	@Override
+              	public void mousePressed(MouseEvent e) {
+              		color=Color.blue;
+              		fillColor=Color.blue;
+              		isfilled=true;
+              	}
+              });
+              m2.setPreferredSize(new Dimension(60, 20));
+              m2.setMaximumSize(new Dimension(200, 20));
+              m2.setBackground(Color.BLUE);
+              JMenuItem m3 = new JMenuItem(" "); 
+              m3.addMouseListener(new MouseAdapter() {
+              	@Override
+              	public void mousePressed(MouseEvent e) {
+              		color=Color.yellow;
+              		fillColor=Color.yellow;
+              		isfilled=true;
+              	}
+              });
+              m3.setBackground(Color.YELLOW);
+              
+                    // add menu items to menu 
+                    x.add(m1); 
+                    x.add(m2); 
+                    x.add(m3);
         
 	}
 
@@ -581,7 +688,7 @@ public class Painter {
 //	    public void actionPerformed(ActionEvent e) {
 //	      Color c = JColorChooser.showDialog(null, "Choose a Color", frame.setForeground(c));
 //	      if (c != null)
-////	        sampleText.setForeground(c);
+//	        sampleText.setForeground(c);
 //	    }
 //	  }
 	Point pos=new Point();
@@ -602,20 +709,24 @@ public class Painter {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if(numOfShape==5) {
+					Color cc=color;
 					line l=new line();
 					lpos=e.getPoint();
 	                l.setPosition(pos);
 	                l.setLPosition(lpos);
 	                Graphics g = canvse.getGraphics();
-	    			Point hr =new Point();
-	    			hr=lpos;
+	                g.setColor(cc);
+	    			l.setColor(cc);
 	    			dg.addShape(l);
 	    			l.draw(g);
 	    			dg.droow(g);
 	    			Map<String,Double> m=new HashMap<>();
+	    			m.put("type",5.0);
 	    			m.put("positionx", pos.getX());
 	    			m.put("positiony", pos.getY());
 	    			m.put("lastPositionx",lpos.getX());
+	    			m.put("color",(double)color.getRGB());
+	    			m.put("fillColor",(double)fillColor.getRGB());
 	    			m.put("lastPositiony", lpos.getY());
 	    			l.setProperties(m);
 	    			canvse.removeMouseListener(this);
@@ -632,6 +743,11 @@ public class Painter {
                     if(x2<pos.x) {temp.x=x2;x2=pos.x;}
                     el.setPosition(temp);
                     Graphics g = canvse.getGraphics();
+                    g.setColor(color);
+                    el.setColor(color);
+                    if(isfilled) {
+                    	el.setFillColor(fillColor);
+                    }
         			Point hr =new Point();
         			hr.x=x2;
         			hr.y=y2;
@@ -640,10 +756,13 @@ public class Painter {
         			el.draw(g);
         			dg.droow(g);
         			Map<String,Double> m=new HashMap<>();
+        			m.put("type",6.0);
 	    			m.put("positionx", temp.getX());
 	    			m.put("positiony", temp.getY());
 	    			m.put("lastPositionx",hr.getX());
 	    			m.put("lastPositiony", hr.getY());
+	    			m.put("color",(double)color.getRGB());
+	    			m.put("fillColor",(double)fillColor.getRGB());
 	    			el.setProperties(m);
         			canvse.removeMouseListener(this);
         			canvse.removeMouseMotionListener(mx);
@@ -658,6 +777,7 @@ public class Painter {
 				
 				if(numOfShape==5) {
 					Graphics g = canvse.getGraphics();
+					g.setColor(color);
 					lpos=e.getPoint();
 	    			g.drawLine(pos.x, pos.y,lpos.x, lpos.y);
 	    			canvse.repaint();
@@ -665,6 +785,7 @@ public class Painter {
 	    			mx=this;
 				}else if(numOfShape==6) {
 					Graphics g = canvse.getGraphics();
+					g.setColor(color);
 					Point dPos=new Point();
 					dPos=e.getPoint();
 					if(dPos.y<pos.y) {
@@ -674,7 +795,10 @@ public class Painter {
 	                    if(dPos.x<pos.x) {
 	                    	x1=dPos.x;
 	                    	x2=pos.x;
-	                    }else {x1=pos.x;x2=dPos.x;}  	
+	                    }else {x1=pos.x;x2=dPos.x;}  
+	                if(isfilled) {
+	                	g.fillArc(x1,y1,Math.abs(x1-x2),Math.abs(y1-y2), 0, 360);
+	                }
         			g.drawArc(x1, y1,Math.abs(x1-x2),Math.abs(y1-y2), 0, 360);
         			canvse.repaint();
         			dg.droow(g);
