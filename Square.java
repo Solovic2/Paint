@@ -106,6 +106,12 @@ public class Square extends ourshape {
 		selecty = y;
 		selectlastx = w;
 		selectlasty = h;
+		Properties.put("positionx",(double)posx);
+		Properties.put("positiony", (double)posy);
+		Properties.put("lastPositionx", (double) wid);
+		Properties.put("lastPositiony", (double) hie);
+		Properties.put("color", (double) c.getRGB());
+		Properties.put("fillColor", (double) fillColor.getRGB());
 		Properties.put("boundx",(double)x);
 		Properties.put("boundy", (double) y);
 		Properties.put("boundlastPositionx", (double) w);
