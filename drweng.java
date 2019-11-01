@@ -67,24 +67,61 @@ boolean firstUndo=true;
 
 	@Override
 	public void undo() {
-		// TODO Auto-generated method stub
+//		// TODO Auto-generated method stub
+//		if(firstUndo) {
+//			if(!st.isEmpty()) {
+//				System.out.println("firstundo");
+//			stRedo.add(st.pop());
+//    		System.out.println("Here is Stack "+st);
+//    		System.out.println("Here is Shapes "+allShapes);
+//			}
+//			}else
+//			{
+				
+				allShapes.clear();
+				if(st.isEmpty()) {
+					
+				}else {
+//					if(firstUndo) {
+						System.out.println("********before***********");
+						System.out.println("Here is Stack "+st);
+			    		System.out.println("Here is Shapes "+allShapes);
+			    		
+						stRedo.add(st.pop());
+						if(!st.isEmpty()) {
+						allShapes.addAll(st.peek());
+			    		}
+						System.out.println("********After***********");
+						System.out.println("Here is Stack "+st);
+			    		System.out.println("Here is Shapes "+allShapes);
+//					}
+//					else {
+//						System.out.println("********before***********");
+//						System.out.println("Here is Stack "+st);
+//			    		System.out.println("Here is Shapes "+allShapes);
+//						stRedo.add(st.peek());
+//						allShapes.addAll(st.pop());
+//						System.out.println("********After***********");
+//						System.out.println("Here is Stack "+st);
+//			    		System.out.println("Here is Shapes "+allShapes);
+//					}
+					
+				}
+//			}
+//	    		System.out.println("Here is Stack "+st);
+//	    		System.out.println("Here is Shapes "+allShapes);
 		
-		allShapes.clear();
-		if(st.isEmpty()) {
-			
-		}else {
-		stRedo.add(st.peek());
-		allShapes.addAll(st.pop());
-		}
+		firstUndo=false;
 	}
 
 	@Override
 	public void redo() {
 		// TODO Auto-generated method stub
-		allShapes.clear();
-		st.add(stRedo.peek());
-		allShapes.addAll(stRedo.pop());
-		
+		if(!stRedo.isEmpty()&&!firstUndo) {
+			allShapes.clear();
+			st.add(stRedo.peek());
+			allShapes.addAll(stRedo.pop());
+		}
 	}
 
 	@Override
