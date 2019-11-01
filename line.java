@@ -1,33 +1,42 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 public class line extends ourshape{
 	Point pos=new Point();
 	Point lpos=new Point();
 	Color c=Color.black;
-	
+	Map<String, Double> Properties=new HashMap<String, Double>();
+	int width;
+	int height;
+	@Override
 	public java.awt.Point getPosition(){
 		return pos;
 	}
-
 	@Override
 	public void setPosition(Point position) {
 		pos=position;
 	}
-
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		// TODO Auto-generated method stub
-		
+		Properties=properties;
+		lpos.x=(int)Math.round(Properties.get("lastPositionx"));
+		lpos.y=(int)Math.round(Properties.get("lastPositiony"));
+		width=pos.x-lpos.x;
+		height=pos.y-lpos.y;
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		// TODO Auto-generated method stub
+		if(!Properties.isEmpty()) {
+			
+			return Properties;
+		}
 		return null;
 	}
 
@@ -55,7 +64,8 @@ public class line extends ourshape{
 
 	@Override
 	public void draw(Graphics canvas) {
-		canvas.drawLine(pos.x,pos.y,lpos.x,lpos.y);
+		canvas.setColor(c);
+		canvas.drawLine(pos.x,pos.y,pos.x-width,pos.y-height);
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
@@ -63,6 +73,8 @@ public class line extends ourshape{
 	}
 	public void setLastPosition(Point position) {
 		lpos=position;
+		width=pos.x-lpos.x;
+		height=pos.y-lpos.y;
 	}
 	int selectx,selecty,selectlastx,selectlasty;
 	public void setSelectionBounds(int x,int y, int w,int h) {
@@ -84,15 +96,22 @@ public class line extends ourshape{
 		f.y=selecty;
 		return f;
 	}
-	public void border(Graphics g) {
-		// TODO Auto-generated method stub
-		g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
-		g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
-		g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
-		g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
-		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
-		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
-		g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
-		g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+	public String shaptype(){
+		return "Line";
+	}
+	public boolean isIn(int x,int y,Canvas canvse) {
+		 if(x> this.selectx&&x<this.selectx+this.selectlastx && y>this.selecty&&y<this.selectlasty+this.selecty) {
+			Graphics g=canvse.getGraphics();
+			g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
+			g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
+			g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);		
+			 return true;
+		 }
+		return false;
 	}
 }

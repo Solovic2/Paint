@@ -1,8 +1,8 @@
 package eg.edu.alexu.csd.oop.draw;
 
-
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -11,12 +11,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 import javax.swing.SpringLayout;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -31,33 +36,37 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import java.awt.Button;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
 public class Painter {
-	
+
 	private JFrame frame;
-	drweng dg=new drweng();
+	drweng dg = new drweng();
 	MouseListener ml;
 	MouseMotionListener mx;
-	int numOfShape=0;
-    Canvas canvse =new Canvas();
-    Square sq;
-    Rectangle r;
-    Triangle t;
-    circle c;
-    line l;
-    ellipse el;
-    boolean pressed_shape=false;
-    Color colorshape=Color.RED;
-    ourshape typeshape;
-    boolean ifselect=false;
-    int buttons=0;
-   
-    ArrayList<Integer> selectPositions =new ArrayList<Integer>();
-    ArrayList<ourshape> selectedshape =new ArrayList<ourshape>();
+	int numOfShape = 0;
+	Canvas canvse = new Canvas();
 
- 
+	boolean pressed_shape = false;
+	ourshape typeshape;
+	int typeIndex;
+	boolean isselect = false;
+	int buttons = 0;
+	boolean canMove = true;
+	Color color = Color.black;
+	Color fillColor = Color.white;
+	boolean isfilled = false;
+	ArrayList<Integer> selectPositions = new ArrayList<Integer>();
+	ArrayList<Integer> forLine = new ArrayList<Integer>();
+	ArrayList<Integer> forTriangle = new ArrayList<Integer>();
+	ArrayList<ourshape> selectedshape = new ArrayList<ourshape>();
+	private Cursor handCursor = new Cursor(Cursor.SE_RESIZE_CURSOR);
+	private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+	int resizeCounter = 0;
+
 	/**
 	 * Launch the application.
 	 */
@@ -86,402 +95,628 @@ public class Painter {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setSize(2500,2000);
-        frame.setTitle("Paint");
-        frame.getContentPane().setLayout(null);
-        canvse.setBackground(Color.WHITE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.setSize(2500, 2000);
+		frame.setTitle("Paint");
+		frame.getContentPane().setLayout(null);
+		canvse.setBackground(Color.WHITE);
 
-        canvse.setSize(1924, 855);
-        canvse.setLocation(0, 200);
-        canvse.setPreferredSize(new Dimension(2000,1500));
-        canvse.setMaximumSize(new Dimension(2000,1500));
-        canvse.setMinimumSize(new Dimension(2000,1500));
-        frame.getContentPane().add(canvse);
+		canvse.setSize(1924, 855);
+		canvse.setLocation(0, 200);
+		canvse.setPreferredSize(new Dimension(2000, 1500));
+		canvse.setMaximumSize(new Dimension(2000, 1500));
+		canvse.setMinimumSize(new Dimension(2000, 1500));
+		canvse.setCursor(defaultCursor);
+		frame.getContentPane().add(canvse);
 
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.GRAY);
-        panel.setAutoscrolls(true);
-        panel.setIgnoreRepaint(true);
-        panel.setForeground(Color.BLACK);
-        panel.setBounds(0, 0, 1924, 200);
-        frame.getContentPane().add(panel);
-        panel.setLayout(null);
-        
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBounds(0, 0, 1924, 25);
-        panel.add(menuBar);
-        
-        JMenuItem mntmNewMenuItem = new JMenuItem("File");
-        mntmNewMenuItem.setMaximumSize(new Dimension(100, 100));
-        menuBar.add(mntmNewMenuItem);
-        
-        JMenuItem mntmNewMenuItem_1 = new JMenuItem("Edit");
-        mntmNewMenuItem_1.setMaximumSize(new Dimension(100, 100));
-        menuBar.add(mntmNewMenuItem_1);
-        
-        JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
-        mntmNewMenuItem_2.setMaximumSize(new Dimension(100, 100));
-        menuBar.add(mntmNewMenuItem_2);
-        
-        JMenuItem mntmNewMenuItem_3 = new JMenuItem("Load");
-        mntmNewMenuItem_3.setMaximumSize(new Dimension(100, 100));
-        menuBar.add(mntmNewMenuItem_3);
-        
-        JPanel panel_1 = new JPanel();
-        panel_1.setBounds(100, 25, 500, 100);
-        panel.add(panel_1);
-        panel_1.setLayout(null);
-        //**************************square***********************
-        Button square = new Button("Square");
-        square.addActionListener(new ActionListener() {
-    	int x,y,x2,y2;
-    	int psx;
-    	public void actionPerformed(ActionEvent arg0) {
-    		buttons=1;
-    		canvse.removeMouseListener(ml);
-			canvse.removeMouseMotionListener(mx);
-            canvse.addMouseListener(ml=new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) { }
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.GRAY);
+		panel.setAutoscrolls(true);
+		panel.setIgnoreRepaint(true);
+		panel.setForeground(Color.BLACK);
+		panel.setBounds(0, 0, 1924, 200);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
 
-				@Override
-				public void mouseEntered(MouseEvent e) {}
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 1371, 25);
+		panel.add(menuBar);
 
-				@Override
-				public void mouseExited(MouseEvent e) {}
+		JMenuItem mntmNewMenuItem = new JMenuItem("File");
+		mntmNewMenuItem.setMaximumSize(new Dimension(100, 100));
+		menuBar.add(mntmNewMenuItem);
 
-				@Override
-				public void mousePressed(MouseEvent e) {
-					x = e.getX();
-                     y = e.getY();
-				}
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Edit");
+		mntmNewMenuItem_1.setMaximumSize(new Dimension(100, 100));
+		menuBar.add(mntmNewMenuItem_1);
 
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					  sq=new Square();
-					Point temp=new Point ();
-					temp.x=x;
-					temp.y=y;
-					x2 = e.getX();
-                    y2 = e.getY();
-                    if(y2<y)temp.y=y2;
-                    if(x2<x)temp.x=x2;
-                    if(Math.abs(x2-x)>Math.abs(y2-y)) {psx=Math.abs(x2-x);}
-                    else {psx=Math.abs(y2-y);}
-                    Graphics g = canvse.getGraphics();
-                    sq.setDim(psx,psx);
-                    sq.setPosition(temp);
-                    sq.setSelectionBounds(temp.x,temp.y,psx,psx);
-        			dg.addShape(sq);
-        			dg.refresh(g);
-//        			pressed_shape=true;
-        			selectedshape.add(sq);
-        			selectPositions.add(temp.x);
-        			selectPositions.add(temp.y);
-        			selectPositions.add(psx);
-        			selectPositions.add(psx);
-        			
-        			System.out.println("squaere");
-//        			cli(temp.x,temp.y,psx,psx);
-        			canvse.removeMouseListener(this);
-        			canvse.removeMouseMotionListener(mx);
-				}
-    	});
-            canvse.addMouseMotionListener(mx=new MouseMotionListener() {
-			
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
+		mntmNewMenuItem_2.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDragged(MouseEvent e) {
-				  Graphics g = canvse.getGraphics();
-				Point temp=new Point ();
-				temp.x=x;
-				temp.y=y;
-				x2 = e.getX();
-                y2 = e.getY();
-                if(y2<y)temp.y=y2;
-                if(x2<x)temp.x=x2;
-                mx=this;
-                if(Math.abs(x2-x)>Math.abs(y2-y)) {psx=Math.abs(x2-x);}
-                else {psx=Math.abs(y2-y);}
-                g.drawRect(temp.x,temp.y,psx, psx);
-    			canvse.repaint();
-    			dg.refresh(g);
+			public void mousePressed(MouseEvent arg0) {
+				JFileChooser fc = new JFileChooser();
+				int response = fc.showSaveDialog(mntmNewMenuItem_2);
+				if (response == JFileChooser.APPROVE_OPTION) {
+					String fileName;
+					fileName = fc.getSelectedFile().toString();
+
+					try {
+						String ss = fileName.substring(fileName.length() - 4);
+						if (ss.equals(".xml") || ss.equals("json")) {
+							dg.save(fileName);
+							System.out.println("correct path");
+						} else {
+							System.out.println("false location");
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						System.out.println("false location111");
+					}
+
+				}
+			}
+		});
+		mntmNewMenuItem_2.setMaximumSize(new Dimension(100, 100));
+		menuBar.add(mntmNewMenuItem_2);
+
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Load");
+		mntmNewMenuItem_3.addMouseListener(new MouseAdapter() {
+			Graphics g = canvse.getGraphics();
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				canvse.repaint();
+				JFileChooser fc = new JFileChooser();
+				javax.swing.filechooser.FileFilter filter1 = new FileNameExtensionFilter("XML file", "xml");
+				javax.swing.filechooser.FileFilter filter2 = new FileNameExtensionFilter("JSON file", "json");
+				fc.setFileFilter(filter1);
+				fc.setFileFilter(filter2);
+				int response = fc.showOpenDialog(mntmNewMenuItem_3);
+				if (response == JFileChooser.APPROVE_OPTION) {
+					String fileName;
+					fileName = fc.getSelectedFile().toString();
+					try {
+						String ss = fileName.substring(fileName.length() - 4);
+						if (ss.equals(".xml") || ss.equals("json")) {
+							dg.load(fileName);
+							System.out.println("correct path");
+						} else {
+							System.out.println("false location");
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						System.out.println("false location111");
+					}
+
+				}
+				dg.droow(g);
+			}
+		});
+		mntmNewMenuItem_3.setMaximumSize(new Dimension(100, 100));
+		menuBar.add(mntmNewMenuItem_3);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(100, 25, 500, 100);
+		panel.add(panel_1);
+		panel_1.setLayout(null);
+		// **************************square***********************
+		Button square = new Button("Square");
+		square.addActionListener(new ActionListener() {
+			int x, y, x2, y2;
+			int psx;
+
+			public void actionPerformed(ActionEvent arg0) {
+				canMove = false;
+				buttons = 1;
+				canvse.removeMouseListener(ml);
+				canvse.removeMouseMotionListener(mx);
+				canvse.addMouseListener(ml = new MouseListener() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+					}
+
+					@Override
+					public void mousePressed(MouseEvent e) {
+						x = e.getX();
+						y = e.getY();
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						Square sq = new Square();
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
+						x2 = e.getX();
+						y2 = e.getY();
+						if (y2 < y)
+							temp.y = y2;
+						if (x2 < x)
+							temp.x = x2;
+						if (Math.abs(x2 - x) > Math.abs(y2 - y)) {
+							psx = Math.abs(x2 - x);
+						} else {
+							psx = Math.abs(y2 - y);
+						}
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						sq.setColor(color);
+						if (isfilled) {
+							sq.setFillColor(fillColor);
+						}
+						sq.setDim(psx, psx);
+						sq.setPosition(temp);
+						dg.addShape(sq);
+						dg.refresh(g);
+						sq.setSelectionBounds(temp.x, temp.y, psx, psx);
+						Map<String, Double> m = new HashMap<>();
+						m.put("type", 1.0);
+						m.put("positionx", temp.getX());
+						m.put("positiony", temp.getY());
+						m.put("lastPositionx", (double) psx);
+						m.put("lastPositiony", (double) psx);
+						m.put("color", (double) color.getRGB());
+						m.put("fillColor", (double) fillColor.getRGB());
+						m.put("boundx",(double)temp.x);
+						m.put("boundy", (double) temp.y);
+						m.put("boundlastPositionx", (double) psx);
+						m.put("boundlastPositiony", (double) psx);
+						System.out.println(m);
+						sq.setProperties(m);
+						
+//        			pressed_shape=true;
+						selectedshape.add(sq);
+//						selectPositions.add(temp.x);
+//						selectPositions.add(temp.y);
+//						selectPositions.add(psx);
+//						selectPositions.add(psx);
+						System.out.println("squaere");
+//        			cli(temp.x,temp.y,psx,psx);
+						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+						shapes.addAll(dg.allShapes);
+						dg.st.push(shapes);
+						dg.firstUndo = true;
+						canMove = true;
+						dg.stRedo.clear();
+						canvse.removeMouseListener(this);
+						canvse.removeMouseMotionListener(mx);
+					}
+				});
+				canvse.addMouseMotionListener(mx = new MouseMotionListener() {
+
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
+						x2 = e.getX();
+						y2 = e.getY();
+						if (y2 < y)
+							temp.y = y2;
+						if (x2 < x)
+							temp.x = x2;
+						mx = this;
+						if (Math.abs(x2 - x) > Math.abs(y2 - y)) {
+							psx = Math.abs(x2 - x);
+						} else {
+							psx = Math.abs(y2 - y);
+						}
+						if (isfilled) {
+							g.fillRect(temp.x, temp.y, psx, psx);
+						}
+						g.drawRect(temp.x, temp.y, psx, psx);
+						canvse.repaint();
+						dg.refresh(g);
+
+					}
+
+					public void mouseMoved(MouseEvent e) {
+					}
+				});
 
 			}
-			public void mouseMoved(MouseEvent e) {}
+
 		});
+		square.setBounds(0, 0, 60, 25);
+		panel_1.add(square);
+		// ***************************rectangle*******************
+		Button rectangle = new Button("Rectangle");
+		rectangle.addActionListener(new ActionListener() {
 
-    }
-    
-        });
-        square.setBounds(0, 0, 60, 25);
-        panel_1.add(square);
-        //***************************rectangle*******************
-        Button rectangle = new Button("Rectangle");
-        rectangle.addActionListener(new ActionListener() {
-        	int x,y,x2,y2;
-        	public void actionPerformed(ActionEvent arg0) {
-        		canvse.removeMouseListener(ml);
-    			canvse.removeMouseMotionListener(mx);
-                canvse.addMouseListener(ml=new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {}
+			int x, y, x2, y2;
+
+			public void actionPerformed(ActionEvent arg0) {
+				canMove = false;
+				canvse.removeMouseListener(ml);
+				canvse.removeMouseMotionListener(mx);
+				canvse.addMouseListener(ml = new MouseListener() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					}
 
 					@Override
-					public void mouseEntered(MouseEvent e) {}
+					public void mouseEntered(MouseEvent e) {
+					}
 
 					@Override
-					public void mouseExited(MouseEvent e) {}
+					public void mouseExited(MouseEvent e) {
+					}
 
 					@Override
 					public void mousePressed(MouseEvent e) {
 						// TODO Auto-generated method stub
 						x = e.getX();
-	                     y = e.getY();
+						y = e.getY();
 					}
 
 					@Override
 					public void mouseReleased(MouseEvent e) {
-						r=new Rectangle();
-						Point temp=new Point ();
-						temp.x=x;
-						temp.y=y;
+						Rectangle r = new Rectangle();
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
 						x2 = e.getX();
-	                    y2 = e.getY();
-	                    if(y2<y)temp.y=y2;
-	                    if(x2<x)temp.x=x2;
-	                    Graphics g = canvse.getGraphics();
-	        			 r.setDim(Math.abs(x-x2), Math.abs(y-y2));
-	                     r.setPosition(temp);
-	        			dg.addShape(r);
-	        			r.draw(g);
-	        			dg.refresh(g);
+						y2 = e.getY();
+						if (y2 < y)
+							temp.y = y2;
+						if (x2 < x)
+							temp.x = x2;
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						r.setColor(color);
+						if (isfilled) {
+							r.setFillColor(fillColor);
+						}
+						r.setDim(Math.abs(x - x2), Math.abs(y - y2));
+						r.setPosition(temp);
+						dg.addShape(r);
+						r.draw(g);
+						dg.refresh(g);
+
 //	        			pressed_shape=true;
-	        			selectedshape.add(r);
-	        			System.out.println(pressed_shape);
-	        			System.out.println("in rect"+temp.x+","+temp.y);
-	        			selectPositions.add(temp.x);
-	        			selectPositions.add(temp.y);
-	        			selectPositions.add( Math.abs(x-x2));
-	        			selectPositions.add(Math.abs(y-y2));
-	        			r.setSelectionBounds(temp.x,temp.y,Math.abs(x-x2),Math.abs(y-y2));
-//	        			cli(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
-	        			canvse.removeMouseListener(this);
-	        			canvse.removeMouseMotionListener(mx);
-	        			}
-        	});
-                canvse.addMouseMotionListener(mx=new MouseMotionListener() {
-    			
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					  Graphics g = canvse.getGraphics();
-					Point temp=new Point ();
-					temp.x=x;
-					temp.y=y;
-					x2 = e.getX();
-                    y2 = e.getY();
-                    if(y2<y)temp.y=y2;
-                    if(x2<x)temp.x=x2;
-                    mx=this;
-                    g.drawRect(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
-        			canvse.repaint();
-        			dg.refresh(g);
- 
-				}
-				public void mouseMoved(MouseEvent e) {}
-    		});
-
-        }
-        });
-        
-        rectangle.setBounds(0, 31, 60, 25);
-        panel_1.add(rectangle);
-        //**************************Trianglr*********************
-        Button triangle = new Button("Triangle");
-        triangle.addActionListener(new ActionListener() {
-        	
-        	int x,y,x2,y2;
-        	public void actionPerformed(ActionEvent arg0) {
-        		canvse.removeMouseListener(ml);
-    			canvse.removeMouseMotionListener(mx);
-                canvse.addMouseListener(ml=new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {}
+						selectedshape.add(r);
+						System.out.println(pressed_shape);
+						System.out.println("in rect" + temp.x + "," + temp.y);
+						selectPositions.add(temp.x);
+						selectPositions.add(temp.y);
+						selectPositions.add(Math.abs(x - x2));
+						selectPositions.add(Math.abs(y - y2));
+						r.setSelectionBounds(temp.x, temp.y, Math.abs(x - x2), Math.abs(y - y2));
+						Map<String, Double> m = new HashMap<>();
+						m.put("type", 2.0);
+						m.put("positionx", temp.getX());
+						m.put("positiony", temp.getY());
+						m.put("lastPositionx", (double) Math.abs(x - x2));
+						m.put("lastPositiony", (double) Math.abs(y - y2));
+						m.put("color", (double) color.getRGB());
+						m.put("fillColor", (double) fillColor.getRGB());
+						r.setProperties(m);
+						// cli(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
+						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+						shapes.addAll(dg.allShapes);
+						dg.st.push(shapes);
+						dg.firstUndo = true;
+						canMove = true;
+						dg.stRedo.clear();
+						canvse.removeMouseListener(this);
+						canvse.removeMouseMotionListener(mx);
+					}
+				});
+				canvse.addMouseMotionListener(mx = new MouseMotionListener() {
 
 					@Override
-					public void mouseEntered(MouseEvent e) {}
+					public void mouseDragged(MouseEvent e) {
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
+						x2 = e.getX();
+						y2 = e.getY();
+						if (y2 < y)
+							temp.y = y2;
+						if (x2 < x)
+							temp.x = x2;
+						mx = this;
+						if (isfilled) {
+							g.fillRect(temp.x, temp.y, Math.abs(x - x2), Math.abs(y - y2));
+						}
+						g.drawRect(temp.x, temp.y, Math.abs(x - x2), Math.abs(y - y2));
+						canvse.repaint();
+						dg.refresh(g);
+
+					}
+
+					public void mouseMoved(MouseEvent e) {
+					}
+				});
+
+			}
+		});
+
+		rectangle.setBounds(0, 31, 60, 25);
+		panel_1.add(rectangle);
+		// **************************Trianglr*********************
+		Button triangle = new Button("Triangle");
+		triangle.addActionListener(new ActionListener() {
+
+			int x, y, x2, y2;
+
+			public void actionPerformed(ActionEvent arg0) {
+				canMove = false;
+				canvse.removeMouseListener(ml);
+				canvse.removeMouseMotionListener(mx);
+				canvse.addMouseListener(ml = new MouseListener() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					}
 
 					@Override
-					public void mouseExited(MouseEvent e) {}
+					public void mouseEntered(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+					}
 
 					@Override
 					public void mousePressed(MouseEvent e) {
 						x = e.getX();
-	                     y = e.getY();
+						y = e.getY();
 					}
 
 					@Override
 					public void mouseReleased(MouseEvent e) {
-						 t=new Triangle();
-						Point temp=new Point ();
-						temp.x=x;
-						temp.y=y;
+						Triangle t = new Triangle();
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
 						x2 = e.getX();
-	                    y2 = e.getY();
-	        			Point hr =new Point();
-	        			hr.x=x2;
-	        			hr.y=y2;
-	        			  Graphics g = canvse.getGraphics();
-	        			 t.setDim(x2,y2);
-	                     t.setPosition(temp);
-	        			 dg.addShape(t);
-	        			t.draw(g);
-	        			dg.refresh(g);
-	        			selectedshape.add(t);
-	        			int min=temp.y;
-	        			int max=y2-temp.y;
-	        			if(y>y2) {
-	        				min=y2;
-	        				max=temp.y-y2;
-	        			}
-	        			
-	        			selectPositions.add(temp.x-Math.abs(temp.x-x2));
-	        			selectPositions.add(min);
-	        			selectPositions.add(2*Math.abs(temp.x-x2));
-	        			selectPositions.add(max);
-	        			t.setSelectionBounds(temp.x-Math.abs(temp.x-x2),min,2*Math.abs(temp.x-x2),max);
+						y2 = e.getY();
+						Point hr = new Point();
+						hr.x = x2;
+						hr.y = y2;
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						t.setColor(color);
+						if (isfilled) {
+							t.setFillColor(fillColor);
+
+						}
+
+						t.setPosition(temp);
+						t.setDim(x2, y2);
+						dg.addShape(t);
+						t.draw(g);
+						dg.refresh(g);
+						selectedshape.add(t);
+						forTriangle.add(x);
+						forTriangle.add(y);
+						forTriangle.add(x2);
+						forTriangle.add(y2);
+						int min = temp.y;
+						int max = y2 - temp.y;
+						if (y > y2) {
+							min = y2;
+							max = temp.y - y2;
+						}
+
+						selectPositions.add(temp.x - Math.abs(temp.x - x2));
+						selectPositions.add(min);
+						selectPositions.add(2 * Math.abs(temp.x - x2));
+						selectPositions.add(max);
+						t.setSelectionBounds(temp.x - Math.abs(temp.x - x2), min, 2 * Math.abs(temp.x - x2), max);
 //	        			cli(temp.x-Math.abs(temp.x-x2),min,2*Math.abs(temp.x-x2),max);
 //	        			pressed_shape=true;
-	        			canvse.removeMouseListener(this);
-	        			canvse.removeMouseMotionListener(mx);
-	        			}
-        	});
-                canvse.addMouseMotionListener(mx=new MouseMotionListener() {
-    			
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					  Graphics g = canvse.getGraphics();
-					Point temp=new Point ();
-					temp.x=x;
-					temp.y=y;
-					x2 = e.getX();
-                    y2 = e.getY();
-                    mx=this;
-                    if(temp.x>x2) {
-                		g.drawLine(temp.x, temp.y, x2,y2);
-                		g.drawLine(x2,y2,temp.x+Math.abs(temp.x-x2),y2);
-                		g.drawLine(temp.x+Math.abs(temp.x-x2),y2,temp.x,temp.y);
-                		}else if(temp.x<x2) {
-                			g.drawLine(temp.x, temp.y, x2, y2);
-                			g.drawLine(x2, y2,temp.x-Math.abs(temp.x-x2),y2);
-                			g.drawLine(temp.x-Math.abs(temp.x-x2),y2,temp.x,temp.y);
-                		}
-        			canvse.repaint();
-        			dg.refresh(g);
- 
-				}
-				public void mouseMoved(MouseEvent e) {}
-    		});
+						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+						shapes.addAll(dg.allShapes);
+						dg.st.push(shapes);
+						dg.firstUndo = true;
+						canMove = true;
+						dg.stRedo.clear();
+						Map<String, Double> m = new HashMap<>();
 
-        }
-        });
-        triangle.setBounds(0, 62, 60, 25);
-        panel_1.add(triangle);
-        //**************************circle***********************
-        Button circle = new Button("circle");
-        circle.addActionListener(new ActionListener() {
-        	
-        	int x,y,x2,y2;	
-        	public void actionPerformed(ActionEvent e) {
-        		canvse.removeMouseListener(ml);
-    			canvse.removeMouseMotionListener(mx);
-        		canvse.addMouseListener(ml=new MouseListener() {
-   
-                    public void mouseClicked(MouseEvent e) {}
-					public void mouseEntered(MouseEvent e) {}
-					public void mouseExited(MouseEvent e) {}
+						m.put("type", 3.0);
+						m.put("positionx", temp.getX());
+						m.put("positiony", temp.getY());
+						m.put("lastPositionx", (double) x2);
+						m.put("lastPositiony", (double) y2);
+						m.put("color", (double) color.getRGB());
+						m.put("fillColor", (double) fillColor.getRGB());
+						t.setProperties(m);
+						canvse.removeMouseListener(this);
+						canvse.removeMouseMotionListener(mx);
+					}
+				});
+				canvse.addMouseMotionListener(mx = new MouseMotionListener() {
+
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
+						x2 = e.getX();
+						y2 = e.getY();
+						mx = this;
+						if (temp.x > x2) {
+							if (isfilled) {
+								int f1 = temp.x, f2 = x2, f3 = temp.x + Math.abs(temp.x - x2), z1 = temp.y, z2 = y2,
+										z3 = y2;
+								int[] xs = { f1, f2, f3 };
+								int[] ys = { z1, z2, z3 };
+								g.fillPolygon(xs, ys, 3);
+							}
+							g.drawLine(temp.x, temp.y, x2, y2);
+							g.drawLine(x2, y2, temp.x + Math.abs(temp.x - x2), y2);
+							g.drawLine(temp.x + Math.abs(temp.x - x2), y2, temp.x, temp.y);
+						} else if (temp.x < x2) {
+							if (isfilled) {
+								int f1 = temp.x, f2 = x2, f3 = temp.x - Math.abs(temp.x - x2), z1 = temp.y, z2 = y2,
+										z3 = y2;
+								int[] xs = { f1, f2, f3 };
+								int[] ys = { z1, z2, z3 };
+								g.fillPolygon(xs, ys, 3);
+							}
+							g.drawLine(temp.x, temp.y, x2, y2);
+							g.drawLine(x2, y2, temp.x - Math.abs(temp.x - x2), y2);
+							g.drawLine(temp.x - Math.abs(temp.x - x2), y2, temp.x, temp.y);
+						}
+						canvse.repaint();
+						dg.refresh(g);
+
+					}
+
+					public void mouseMoved(MouseEvent e) {
+					}
+				});
+
+			}
+		});
+		triangle.setBounds(0, 62, 60, 25);
+		panel_1.add(triangle);
+		// **************************circle***********************
+		Button circle = new Button("circle");
+		circle.addActionListener(new ActionListener() {
+
+			int x, y, x2, y2;
+
+			public void actionPerformed(ActionEvent e) {
+				canMove = false;
+				canvse.removeMouseListener(ml);
+				canvse.removeMouseMotionListener(mx);
+				canvse.addMouseListener(ml = new MouseListener() {
+
+					public void mouseClicked(MouseEvent e) {
+					}
+
+					public void mouseEntered(MouseEvent e) {
+					}
+
+					public void mouseExited(MouseEvent e) {
+					}
+
 					public void mousePressed(MouseEvent e) {
-						 x = e.getX();
-	                     y = e.getY();
+						x = e.getX();
+						y = e.getY();
 					}
 
 					@Override
 					public void mouseReleased(MouseEvent e) {
-						c =new circle();
-						Point temp=new Point ();
-						temp.x=x;
-						temp.y=y;
+						circle c = new circle();
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
 						x2 = e.getX();
-	                    y2 = e.getY();
-	                    if(y2<y)temp.y=y2;
-	                    if(x2<x)temp.x=x2;
-	                    c.setPosition(temp);
-	                    Graphics g = canvse.getGraphics();
-	                	double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-	        			int h=(int) Math.round(k);
-	        			c.setSelectionBounds(temp.x,temp.y,h,h);
-	        			dg.addShape(c);
-	        			c.setRad(h);
-	        			dg.refresh(g);
+						y2 = e.getY();
+						if (y2 < y)
+							temp.y = y2;
+						if (x2 < x)
+							temp.x = x2;
+						c.setPosition(temp);
+						Graphics g = canvse.getGraphics();
+						g.setColor(color);
+						c.setColor(color);
+						if (isfilled) {
+							c.setFillColor(fillColor);
+						}
+						Point hr = new Point();
+						hr.x = x2;
+						hr.y = y2;
+	        			c.setDim(hr);
+						double k = Math.sqrt(Math.pow(y - y2, 2) + Math.pow(x - x2, 2));
+						int h = (int) Math.round(k);
+						c.setSelectionBounds(temp.x, temp.y, h, h);
+						dg.addShape(c);
+						dg.refresh(g);
 //	        			pressed_shape=true;
-	        			selectedshape.add(c);
-	        			selectPositions.add(temp.x);
-	        			selectPositions.add(temp.y);
-	        			selectPositions.add(h);
-	        			selectPositions.add(h);
+						selectedshape.add(c);
+						selectPositions.add(temp.x);
+						selectPositions.add(temp.y);
+						selectPositions.add(h);
+						selectPositions.add(h);
 //	        			selectedshape=c;
-	        			
 
 //	        			cli(temp.x,temp.y,h,h);
-	        			
-	        			canvse.removeMouseListener(this);
-	        			canvse.removeMouseMotionListener(mx);
+						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+						shapes.addAll(dg.allShapes);
+						dg.st.push(shapes);
+						dg.firstUndo = true;
+						canMove = true;
+						dg.stRedo.clear();
+						Map<String, Double> m = new HashMap<>();
+						m.put("type", 4.0);
+						m.put("positionx", temp.getX());
+						m.put("positiony", temp.getY());
+						m.put("lastPositionx", (double) x2);
+						m.put("lastPositiony", (double) y2);
+						m.put("color", (double) color.getRGB());
+						m.put("fillColor", (double) fillColor.getRGB());
+						System.out.println(m);
+						c.setProperties(m);
+						canvse.removeMouseListener(this);
+						canvse.removeMouseMotionListener(mx);
 					}
-        	});
-        		canvse.addMouseMotionListener(mx=new MouseMotionListener() {
-        			
+				});
+				canvse.addMouseMotionListener(mx = new MouseMotionListener() {
+
 					@Override
 					public void mouseDragged(MouseEvent e) {
-						  Graphics g = canvse.getGraphics();
-						Point temp=new Point ();
-						temp.x=x;
-						temp.y=y;
+						Graphics g = canvse.getGraphics();
+						Point temp = new Point();
+						temp.x = x;
+						temp.y = y;
 						x2 = e.getX();
-	                    y2 = e.getY();
-	                    if(y2<y)temp.y=y2;
-	                    if(x2<x)temp.x=x2;
-	                	double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-	        			int h=(int) Math.round(k);
-	        			g.drawArc(temp.x, temp.y, h, h, 0, 360);
-	        			canvse.repaint();
-	        			dg.refresh(g);
-	        			mx=this;
+						y2 = e.getY();
+						if (y2 < y)
+							temp.y = y2;
+						if (x2 < x)
+							temp.x = x2;
+						double k = Math.sqrt(Math.pow(y - y2, 2) + Math.pow(x - x2, 2));
+						int h = (int) Math.round(k);
+						if (isfilled) {
+							g.fillArc(temp.x, temp.y, h, h, 0, 360);
+						}
+						g.drawArc(temp.x, temp.y, h, h, 0, 360);
+						canvse.repaint();
+						dg.refresh(g);
+						mx = this;
 					}
-					public void mouseMoved(MouseEvent e) {}
-        		});
 
+					public void mouseMoved(MouseEvent e) {
+					}
+				});
 
-        	}
-        
-        
-        });
-        circle.setActionCommand("circle");
-        circle.setBounds(75, 1, 67, 24);
-        panel_1.add(circle);
-        //*********************ellipse****************************
-        Button ellipse = new Button("ellipse");
-        ellipse.addActionListener(new ActionListener() {
+			}
+
+		});
+		circle.setActionCommand("circle");
+		circle.setBounds(75, 1, 67, 24);
+		panel_1.add(circle);
+		// *********************ellipse****************************
+		Button ellipse = new Button("ellipse");
+		ellipse.addActionListener(new ActionListener() {
 //        	ellipse el=new ellipse();
 //        	Point fPos=new Point();
 //        	Point lPos=new Point();
 //        	int x1,x2,y1,y2;
 //        	
-        	public void actionPerformed(ActionEvent e) {
-        		canvse.removeMouseListener(ml);
-    			canvse.removeMouseMotionListener(mx);
-        		numOfShape=6;
-        		drawShape(canvse);
+			public void actionPerformed(ActionEvent e) {
+				canMove = false;
+				canvse.removeMouseListener(ml);
+				canvse.removeMouseMotionListener(mx);
+				numOfShape = 6;
+				drawShape(canvse);
 //        		canvse.addMouseListener(ml=new MouseListener() {
 //   
 //                    public void mouseClicked(MouseEvent e) {}
@@ -540,485 +775,631 @@ public class Painter {
 //					}
 //					public void mouseMoved(MouseEvent e) {}
 //        		});
-        	}
-        });
-        ellipse.setBounds(75, 31, 67, 24);
-        panel_1.add(ellipse);
-        
-        //*******************Line**********************
-        
-        Button line = new Button("Line");
-        line.addActionListener(new ActionListener() {
+			}
+		});
+		ellipse.setBounds(75, 31, 67, 24);
+		panel_1.add(ellipse);
+
+		// *******************Line**********************
+
+		Button line = new Button("Line");
+		line.addActionListener(new ActionListener() {
 //        	line l=new line();
 //        	Point pos=new Point();
 //        	Point lpos=new Point();
-        	public void actionPerformed(ActionEvent e) {
-        		canvse.removeMouseListener(ml);
-    			canvse.removeMouseMotionListener(mx);
-        		numOfShape=5;
-        		drawShape(canvse);
-        	}
-        });
-        line.setActionCommand("Line");
-        line.setBounds(75, 62, 67, 24);
-        panel_1.add(line);
-        boolean isfound=false;
-        Button colors = new Button("Color");
-        colors.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		buttons=7;
-        		Graphics2D gr=(Graphics2D)canvse.getGraphics();
-//        		pressed_shape=true;
+			public void actionPerformed(ActionEvent e) {
+				canMove = false;
+				canvse.removeMouseListener(ml);
+				canvse.removeMouseMotionListener(mx);
+				numOfShape = 5;
+				drawShape(canvse);
+			}
+		});
+		line.setActionCommand("Line");
+		line.setBounds(75, 62, 67, 24);
+		panel_1.add(line);
+		JMenuBar mb = new JMenuBar();
+		mb.setBackground(Color.WHITE);
+		mb.setBounds(168, 2, 40, 25);
+		panel_1.add(mb);
 
-        		canvse.addMouseListener(mm=new MouseListener() {
-        			
-        			@Override
-        			public void mouseReleased(MouseEvent e) {
-        				// TODO Auto-generated method stub
-        				
-        			}
-        			
-        			public void mousePressed(MouseEvent e) {
-		        		canvse.paint(canvse.getGraphics());
-			        	dg.refresh(canvse.getGraphics());
+		// create a menu
+		JMenu x = new JMenu("color");
+		mb.add(x);
 
-//        				System.out.println(e.getX()+" "+x +" "+w+"\n"+e.getY()+" "+y+" "+h+' ' );
-        				// TODO Auto-generated method stub
-        		        if ( (pressed_shape)||buttons==7 ) {
-        		        	System.out.println(selectedshape.size());
-        		        	for(int j=0;j<selectedshape.size();j++) {
-        		        		int f1;
-        		        		int f2;
-        		        		int f3;
-        		        		int f4;
-	            		        	System.out.println(selectedshape.get(j));
-	            		        	System.out.println("x,y "+selectedshape.get(j).getSelectionBounds()+"w,h "+selectedshape.get(j).getval()+"when i press "+e.getPoint());
-	            		        	 f1=selectedshape.get(j).getSelectionBounds().x;
-	            		        	 f2=selectedshape.get(j).getval().x+selectedshape.get(j).getSelectionBounds().x ;
-	            		        	 f3=selectedshape.get(j).getSelectionBounds().y;
-	            		        	 f4=selectedshape.get(j).getSelectionBounds().y+selectedshape.get(j).getval().y;
-	            		        	  if(e.getX()> f1&&e.getX()<f2 && e.getY()>f3&&e.getY()<f4){
-	            		                	System.out.println("this");
-//	            		                	System.out.println((selectPositions.get())+" this "+(selectPositions.get(i+1))+" "+selectPositions.get(i+2)+" "+selectPositions.get(i+3));
-	            		                	 selectedshape.get(j).border(canvse.getGraphics());
-//	            				                Graphics2D g2=(Graphics2D )canvse.getGraphics();
-//	            				                g2.setPaint(colorshape);
-	            		                	 pressed_shape = true;
-//	            		                	 isfound=true;
-	            		                	 break;
-	            				               
-	        	        			
-	            		                }else {
-	            			   
-	            				        	dg.refresh(canvse.getGraphics());
-	            				        	System.out.println("false");
-	            		                }
-	        	        		}
-	        		                
-        		             
-        		        }else {
-        		        	pressed_shape=false;
-        		        }
-
-        		        
-//        		               else if(! (pressed_shape)||! (buttons==7)){
-//        		        	dg.refresh(g);
-//        		        	pressed_shape = false;
-//        		        	System.out.println("false");
-//        		        }
-
-
-//        				if(pressed_shape&& e.getX()>x &&e.getX()<w+x && e.getY()>y&&e.getY()<h+y ) {
-//        					ifselect=true;
-//        					System.out.println("hereis true");
-//        					g.drawRect(x-3,y-3, 5, 5);
-//        					g.drawRect(x+w-3,y-3 , 5, 5);
-//        					g.drawRect(x-3,h+y-3, 5, 5);
-//        					g.drawRect(x+w-3,h+y-3, 5, 5);
-//        					g.drawRect((x+w/2)-3,(y-3) , 5, 5);
-//        					g.drawRect((x+w/2)-3,(h+y-3) , 5, 5);
-//        					g.drawRect(x-3,(y+h/2)-3 , 5, 5);
-//        					g.drawRect(x+w-3,(y+h/2)-3 , 5, 5);
-//        					counter=1;
-//        					System.out.println("first "+counter);
-//        					System.out.println((x)+" this "+(y)+" "+w+" "+h);
-////        					System.out.println("squaaaaaaaaare");
-//        					flag=true;
-////        					System.out.println("done");
-////        					pressed_shape3=false;
-////        					pressed_shape4=false;
-        //
-//        				} else if(!( e.getX()>x &&e.getX()<w+x && e.getY()>y&&e.getY()<h+y)&&flag&&pressed_shape)  {
-////        					canvse.repaint();
-//        					g.clearRect(x-3,y-3, 6, 6);
-//        					g.clearRect(x+w-3,y-3 , 6, 6);
-//        					g.clearRect(x-3,h+y-3, 6, 6);
-//        					g.clearRect(x+w-3,h+y-3, 6, 6);
-//        					g.clearRect((x+w/2)-3,(y-3) , 6, 6);
-//        					g.clearRect((x+w/2)-3,(h+y-3) , 6, 6);
-//        					g.clearRect(x-3,(y+h/2)-3 , 6, 6);
-//        					g.clearRect(x+w-3,(y+h/2)-3 , 6, 6);
-//        					
-////        					System.out.println("SDsdsadasd");
-////        					System.out.println("clear ");
-////        					System.out.println("false");
-//        					dg.refresh(g);
-//        					
-//        					counter--;
-//        					System.out.println("Second "+counter);
-////        					if (counter==0) {
-////        						flag=false;
-////        					}
-//        					
-//        					ifselect=false;
-//        					System.out.println((x)+" this "+(y)+" "+w+" "+h);
-//        					System.out.println("here is false");
-        //
-//        				}
-
-//        	    		if(pressed_shape3 &&e.getX()>x-Math.abs(x-w) &&e.getX()<x+Math.abs(x-w) && e.getY()>min&&e.getY()<max ) {
-//        	    			System.out.println("triangleeeeeeeeee");
-//        	    			g.drawRect(x-3,y-3 , 5, 5);//center nourth edge
-//        	    			g.drawRect(x-3,y-(y-h)-3 , 5, 5);//center down edge
-//        					g.drawRect(x-Math.abs(x-w)-3,y-3, 5, 5);///the left north edge
-//        					g.drawRect(x+(x-w)-3,y-(y-h)-3 , 5, 5);
-//        					g.drawRect(x-(x-w)-3,y-(y-h)-3 ,5, 5);
-//        					g.drawRect(x+Math.abs(x-w)-3,y-3, 5, 5);//the right nourth edge 
-//        					isselected++;
-////        					pressed_shape=false;
-////        					pressed_shape4=false;
-//        				}else if(pressed_shape3&&!(e.getX()>x-Math.abs(x-w) &&e.getX()<x+Math.abs(x-w) && e.getY()>min&&e.getY()<max)){
-//        	    			g.clearRect(x-3,y-3 , 6, 6);//center nourth edge
-//        	    			g.clearRect(x-3,y-(y-h)-3 , 6, 6);//center down edge
-//        					g.clearRect(x-Math.abs(x-w)-3,y-3, 6, 6);///the left north edge
-//        					g.clearRect(x+(x-w)-3,y-(y-h)-3 , 6, 6);
-//        					g.clearRect(x-(x-w)-3,y-(y-h)-3 ,6, 6);
-//        					g.clearRect(x+Math.abs(x-w)-3,y-3, 6, 6);//the right nourth edge 
-//        					dg.droow(g);
-//        					System.out.println("clear   triangleeeeeeeeee");
-//        				}
-//        	    		if(pressed_shape4 && (e.getX()>(x-10)&& e.getX()<(x+10) &&e.getY()>y-10&&e.getY()<y+10 )|| (e.getX()>w-10&&e.getX()<w+10&&e.getY()>h-10 &&e.getY()<h+10)) {
-//        					g.drawRect(x-3,y-3, 5, 5);
-//        					g.drawRect(w-3,h-3 , 5, 5);
-//        					isselected++;
-//        					System.out.println("Sdsdsdssdssssssssssssssssss");
-//        					pressed_shape=false;
-//        					pressed_shape3=false;
-//        				}else if(pressed_shape4 &&! (e.getX()>(x-10)&& e.getX()<(x+10) &&e.getY()>y-10&&e.getY()<y+10 )|| (e.getX()>w-10&&e.getX()<w+10&&e.getY()>h-10 &&e.getY()<h+10)) {
-//        					g.clearRect(x-3,y-3, 6, 6);
-//        					g.clearRect(w-3,h-3 , 6, 6);
-//        				}
-//        					else {
-//        					canvse.repaint();
-//        					d.drawRect(x, y, w, h);
-//        				}
-        			}
-        			
-        			@Override
-        			public void mouseExited(MouseEvent e) {
-        				// TODO Auto-generated method stub
-        				
-        			}
-        			
-        			@Override
-        			public void mouseEntered(MouseEvent e) {
-        				// TODO Auto-generated method stub
-        				
-        			}
-        			
-        			@Override
-        			public void mouseClicked(MouseEvent e) {
-        				// TODO Auto-generated method stub
-        			}
-        			
-        		});
-        	}
-        	
-        });
-        	colors.setActionCommand("Color");
-        	colors.setBounds(200, 1, 67, 24);
-        panel_1.add(colors);
-	}
-
-	Point pos=new Point();
-	Point lpos=new Point();
-	int x1,x2,y1,y2;
-	public void drawShape(Canvas canvse){
-		
-    	
-		canvse.addMouseListener(ml=new MouseListener() {
-			  
-            public void mouseClicked(MouseEvent e) {}
-			public void mouseEntered(MouseEvent e) {}
-			public void mouseExited(MouseEvent e) {}
+		// create menuitems
+		JMenuItem m1 = new JMenuItem(" ");
+		m1.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mousePressed(MouseEvent e) {
-				 pos=e.getPoint();
+				color = Color.red;
+				fillColor = Color.red;
+				isfilled = true;
 			}
-
+		});
+		m1.setBackground(Color.RED);
+		JMenuItem m2 = new JMenuItem(" ");
+		m2.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				if(numOfShape==5) {
-					  Graphics g = canvse.getGraphics();
-					l=new line();
-					lpos=e.getPoint();
-	                l.setPosition(pos);
-	                l.setLastPosition(lpos);
-	    			Point hr =new Point();
-	    			hr=lpos;
-	    			dg.addShape(l);
-	    			l.draw(g);
-	    			dg.refresh(g);
-//	    			pressed_shape=true;
-	    			int minx=pos.x;
-	    			int miny=pos.y;
-	    			int minxx=Math.abs(lpos.x-pos.x);;
-	    			int minyy=Math.abs(lpos.y-pos.y);;
-	    			if(pos.x>lpos.x) {
-	    				minx=pos.x-minxx;
-	    				
-	    			}
-	    			if(pos.y>lpos.y) {
-	    				miny=lpos.y;
-	    			}
-	    			selectedshape.add(l);
-        			selectPositions.add(minx);
-        			selectPositions.add(miny);
-        			selectPositions.add(minxx);
-        			selectPositions.add(minyy);
-        			l.setSelectionBounds(minx,miny,minxx,minyy);
-
-//	    			cli(minx,miny,minxx,minyy);
-	    			System.out.println(lpos.x+" "+pos.x+" "+Math.abs(lpos.x-pos.x));
-	    			
-	    			
-	    			canvse.removeMouseListener(this);
-	    			canvse.removeMouseMotionListener(mx);
-    			}else if(numOfShape==6) {
-    				el=new ellipse();
-    				Point temp=new Point ();
-					temp.x=pos.x;
-					temp.y=pos.y;
-					x2 = e.getX();
-                    y2 = e.getY();
-                    Graphics g = canvse.getGraphics();
-                    if(y2<pos.y) {temp.y=y2;y2=pos.y;}
-                    if(x2<pos.x) {temp.x=x2;x2=pos.x;}
-                    el.setPosition(temp);
-                    
-        			Point hr =new Point();
-        			hr.x=x2;
-        			hr.y=y2;
-        			el.setLastPosition(hr);
-        			dg.addShape(el);
-        			el.draw(g);
-        			dg.refresh(g);
-        			selectedshape.add(el);
-        			selectPositions.add(temp.x);
-        			selectPositions.add(temp.y);
-        			selectPositions.add(Math.abs(temp.x-el.lastPos.x));
-        			selectPositions.add(Math.abs(temp.y-el.lastPos.y));
-        			el.setSelectionBounds(temp.x,temp.y,Math.abs(temp.x-el.lastPos.x),Math.abs(temp.y-el.lastPos.y));
-//        			cli(temp.x,temp.y,Math.abs(temp.x-el.lastPos.x),Math.abs(temp.y-el.lastPos.y));
-//        			pressed_shape=true;
-        			canvse.removeMouseListener(this);
-        			canvse.removeMouseMotionListener(mx);
-    			}
+			public void mousePressed(MouseEvent e) {
+				color = Color.blue;
+				fillColor = Color.blue;
+				isfilled = true;
 			}
-			
-	});
-		canvse.addMouseMotionListener(mx=new MouseMotionListener() {
+		});
+		m2.setPreferredSize(new Dimension(60, 20));
+		m2.setMaximumSize(new Dimension(200, 20));
+		m2.setBackground(Color.BLUE);
+		JMenuItem m3 = new JMenuItem(" ");
+		m3.addMouseListener(new MouseAdapter() {
 			@Override
-			
-			public void mouseDragged(MouseEvent e) {
-				
-				if(numOfShape==5) {
-					  Graphics g = canvse.getGraphics();
-					lpos=e.getPoint();
-	    			g.drawLine(pos.x, pos.y,lpos.x, lpos.y);
-	    			canvse.repaint();
-	    			dg.refresh(g);
-	    			mx=this;
-				}else if(numOfShape==6) {
-					  Graphics g = canvse.getGraphics();
-					Point dPos=new Point();
-					dPos=e.getPoint();
-					if(dPos.y<pos.y) {
-	                    	y1=dPos.y;
-	                    	y2=pos.y;
-	                    }else {y1=pos.y;y2=dPos.y;}
-	                    if(dPos.x<pos.x) {
-	                    	x1=dPos.x;
-	                    	x2=pos.x;
-	                    }else {x1=pos.x;x2=dPos.x;}  	
-        			g.drawArc(x1, y1,Math.abs(x1-x2),Math.abs(y1-y2), 0, 360);
-        			canvse.repaint();
-        			dg.refresh(g);
-        			mx=this;
+			public void mousePressed(MouseEvent e) {
+				color = Color.yellow;
+				fillColor = Color.yellow;
+				isfilled = true;
+			}
+		});
+		m3.setBackground(Color.YELLOW);
+
+		// add menu items to menu
+		x.add(m1);
+		x.add(m2);
+		x.add(m3);
+
+		JButton btnNewButton = new JButton("Remove");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (isselect) {
+					dg.removeShape((eg.edu.alexu.csd.oop.draw.Shape) typeshape);
+					selectedshape.remove(typeIndex);
+					canvse.paint(canvse.getGraphics());
+					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+					shapes.addAll(dg.allShapes);
+					dg.st.push(shapes);
+					dg.firstUndo = true;
+					dg.stRedo.clear();
+					dg.refresh(canvse.getGraphics());
 				}
 			}
-			public void mouseMoved(MouseEvent e) {}
-			
 		});
-		
-	}
-	int isselected=0;
-	MouseListener mm;
-	int min;
-	int max;
-	int counter=0;
-	boolean flag=false;
-	public void cli(int x , int y , int w , int h) {
-		System.out.println("Here is Painter");
-		Graphics g = canvse.getGraphics();
+		btnNewButton.setBounds(148, 62, 97, 25);
+		panel_1.add(btnNewButton);
 
-		min=y;
-		max=h;
-		if(y>h) {
-			min=h;max=y;
-			System.out.println("hesihausnfjff");
+		Button button = new Button("Undo");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (dg.st.isEmpty()) {
+					canvse.paint(canvse.getGraphics());
+				}
+				dg.undo();
+
+				canvse.paint(canvse.getGraphics());
+				dg.refresh(canvse.getGraphics());
 			}
-		canvse.addMouseListener(mm=new MouseListener() {
-			
+		});
+		button.setBounds(252, 32, 67, 24);
+		panel_1.add(button);
+
+		Button button_1 = new Button("Redo");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (dg.stRedo.isEmpty()) {
+					canvse.paint(canvse.getGraphics());
+
+				}
+				canvse.paint(canvse.getGraphics());
+				System.out.println(dg.stRedo);
+				dg.redo();
+				System.out.println(dg.allShapes);
+
+				dg.refresh(canvse.getGraphics());
+
+			}
+		});
+		button_1.setBounds(380, 32, 67, 24);
+		panel_1.add(button_1);
+
+		Button button_2 = new Button("Resize");
+		button_2.addActionListener(new ActionListener() {
+			int x, y, x2, y2;
+
+			public void actionPerformed(ActionEvent e) {
+				if (isselect) {
+
+					canvse.addMouseListener(new MouseListener() {
+						@Override
+						public void mouseReleased(MouseEvent e) {
+
+						}
+
+						@Override
+						public void mousePressed(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+							if (typeshape.resize(e.getX(), e.getY())) {
+								x = e.getX();
+								y = e.getY();
+
+							}
+
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							// TODO Auto-generated method stub
+						}
+
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+						}
+					});
+					canvse.addMouseMotionListener(new MouseMotionListener() {
+
+						@Override
+						public void mouseMoved(MouseEvent e) {
+							// TODO Auto-generated method stub
+
+							if (typeshape.resize(e.getX(), e.getY()) && canMove) {
+								System.out.println(typeshape.getcounter());
+								switch (typeshape.getcounter()) {
+
+								case 1:
+									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+									resizeCounter = 1;
+									break;
+								case 2:
+									canvse.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
+									resizeCounter = 2;
+									break;
+								case 3:
+									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
+									resizeCounter = 3;
+									break;
+								case 4:
+									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
+									resizeCounter = 4;
+									break;
+								case 5:
+									canvse.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+									resizeCounter = 5;
+									break;
+								case 6:
+									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+									resizeCounter = 6;
+									break;
+								case 7:
+									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+									resizeCounter = 7;
+									break;
+								case 8:
+									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+									resizeCounter = 8;
+									break;
+								}
+
+							} else if (!typeshape.resize(e.getX(), e.getY())) {
+								canvse.setCursor(defaultCursor);
+							}
+
+						}
+
+						@Override
+						public void mouseDragged(MouseEvent e) {
+							// TODO Auto-generated method stub\
+
+							x2 = e.getX();
+							y2 = e.getY();
+							Point s = new Point();
+							s.x = x;
+							s.y = y;
+							int wids = typeshape.getwid_hie().x;
+							canvse.getGraphics().clearRect(typeshape.getPosition().x, typeshape.getPosition().y,
+									typeshape.getwid_hie().x, typeshape.getwid_hie().y);
+							typeshape.getResize(x, y, x2, y2, resizeCounter, canvse);
+
+							canvse.paint(canvse.getGraphics());
+							System.out.println(x2 + " " + y2);
+							typeshape.draw(canvse.getGraphics());
+
+//											canvse.getGraphics().drawArc(x, y,Math.abs(x2-x), Math.abs(y2-y),0,360);
+							System.out.println(x + " " + y2 + " " + (x - x2) + " " + y2);
+
+						}
+					});
+				}
+			}
+		});
+		button_2.setBounds(251, 62, 67, 24);
+		panel_1.add(button_2);
+		boolean isfound = false;
+
+		buttons = 7;
+		Graphics2D gr = (Graphics2D) canvse.getGraphics();
+//        		pressed_shape=true;
+
+		canvse.addMouseListener(mm = new MouseListener() {
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mousePressed(MouseEvent e) {
-//				System.out.println(e.getX()+" "+x +" "+w+"\n"+e.getY()+" "+y+" "+h+' ' );
+				canvse.paint(canvse.getGraphics());
+				dg.refresh(canvse.getGraphics());
+				isselect = false;
+//        				System.out.println(e.getX()+" "+x +" "+w+"\n"+e.getY()+" "+y+" "+h+' ' );
 				// TODO Auto-generated method stub
-		        if ( (pressed_shape)&&buttons==7 ) {
-		        	System.out.println(selectedshape);
-//		        	System.out.println("sa"+selectedshape.getPosition()+" "+e.getPoint());
-		        	System.out.println((x)+" first "+(y)+" "+w+" "+h);
-		                if(e.getX()>x &&e.getX()<w+x && e.getY()>y&&e.getY()<h+y){
-		                	System.out.println("this");
-		                	System.out.println((x)+" this "+(y)+" "+w+" "+h);
-//		                	 selectedshape.border(g);
-				                Graphics2D g2=(Graphics2D )g;
-				                g2.setPaint(colorshape);
-				                pressed_shape = true;
-		                
-		                }else {
-			        		canvse.paint(g);
-				        	dg.refresh(canvse.getGraphics());
-				        	pressed_shape = false;
-				        	System.out.println("false");
-		                }
+				if (true) {
+					System.out.println(selectedshape.size());
+					selectedshape.clear();
+					selectedshape.addAll((Collection<? extends ourshape>) dg.allShapes);
 
-		        }
-//		                else if(! (pressed_shape)||! (buttons==7)){
-//		        	dg.refresh(g);
-//		        	pressed_shape = false;
-//		        	System.out.println("false");
-//		        }
+					for (int j = 0; j < selectedshape.size(); j++) {
+						int f1;
+						int f2;
+						int f3;
+						int f4;
+						System.out.println(selectedshape.get(j));
+						System.out.println("x,y " + selectedshape.get(j).getSelectionBounds() + "w,h "
+								+ selectedshape.get(j).getval() + "when i press " + e.getPoint());
+//	            		        	 f1=selectedshape.get(j).getSelectionBounds().x;
+//	            		        	 f2=selectedshape.get(j).getval().x+selectedshape.get(j).getSelectionBounds().x ;
+//	            		        	 f3=selectedshape.get(j).getSelectionBounds().y;
+//	            		        	 f4=selectedshape.get(j).getSelectionBounds().y+selectedshape.get(j).getval().y;
+						if (selectedshape.get(j).isIn(e.getX(), e.getY(), canvse)) {
+							typeshape = selectedshape.get(j);
+							isselect = true;
+							typeIndex = j;
 
+							pressed_shape = true;
+//	            		                	 dg.firstUndo=true;
+							break;
 
-//				if(pressed_shape&& e.getX()>x &&e.getX()<w+x && e.getY()>y&&e.getY()<h+y ) {
-//					ifselect=true;
-//					System.out.println("hereis true");
-//					g.drawRect(x-3,y-3, 5, 5);
-//					g.drawRect(x+w-3,y-3 , 5, 5);
-//					g.drawRect(x-3,h+y-3, 5, 5);
-//					g.drawRect(x+w-3,h+y-3, 5, 5);
-//					g.drawRect((x+w/2)-3,(y-3) , 5, 5);
-//					g.drawRect((x+w/2)-3,(h+y-3) , 5, 5);
-//					g.drawRect(x-3,(y+h/2)-3 , 5, 5);
-//					g.drawRect(x+w-3,(y+h/2)-3 , 5, 5);
-//					counter=1;
-//					System.out.println("first "+counter);
-//					System.out.println((x)+" this "+(y)+" "+w+" "+h);
-////					System.out.println("squaaaaaaaaare");
-//					flag=true;
-////					System.out.println("done");
-////					pressed_shape3=false;
-////					pressed_shape4=false;
-//
-//				} else if(!( e.getX()>x &&e.getX()<w+x && e.getY()>y&&e.getY()<h+y)&&flag&&pressed_shape)  {
-////					canvse.repaint();
-//					g.clearRect(x-3,y-3, 6, 6);
-//					g.clearRect(x+w-3,y-3 , 6, 6);
-//					g.clearRect(x-3,h+y-3, 6, 6);
-//					g.clearRect(x+w-3,h+y-3, 6, 6);
-//					g.clearRect((x+w/2)-3,(y-3) , 6, 6);
-//					g.clearRect((x+w/2)-3,(h+y-3) , 6, 6);
-//					g.clearRect(x-3,(y+h/2)-3 , 6, 6);
-//					g.clearRect(x+w-3,(y+h/2)-3 , 6, 6);
-//					
-////					System.out.println("SDsdsadasd");
-////					System.out.println("clear ");
-////					System.out.println("false");
-//					dg.refresh(g);
-//					
-//					counter--;
-//					System.out.println("Second "+counter);
-////					if (counter==0) {
-////						flag=false;
-////					}
-//					
-//					ifselect=false;
-//					System.out.println((x)+" this "+(y)+" "+w+" "+h);
-//					System.out.println("here is false");
-//
-//				}
+						} else {
 
-//	    		if(pressed_shape3 &&e.getX()>x-Math.abs(x-w) &&e.getX()<x+Math.abs(x-w) && e.getY()>min&&e.getY()<max ) {
-//	    			System.out.println("triangleeeeeeeeee");
-//	    			g.drawRect(x-3,y-3 , 5, 5);//center nourth edge
-//	    			g.drawRect(x-3,y-(y-h)-3 , 5, 5);//center down edge
-//					g.drawRect(x-Math.abs(x-w)-3,y-3, 5, 5);///the left north edge
-//					g.drawRect(x+(x-w)-3,y-(y-h)-3 , 5, 5);
-//					g.drawRect(x-(x-w)-3,y-(y-h)-3 ,5, 5);
-//					g.drawRect(x+Math.abs(x-w)-3,y-3, 5, 5);//the right nourth edge 
-//					isselected++;
-////					pressed_shape=false;
-////					pressed_shape4=false;
-//				}else if(pressed_shape3&&!(e.getX()>x-Math.abs(x-w) &&e.getX()<x+Math.abs(x-w) && e.getY()>min&&e.getY()<max)){
-//	    			g.clearRect(x-3,y-3 , 6, 6);//center nourth edge
-//	    			g.clearRect(x-3,y-(y-h)-3 , 6, 6);//center down edge
-//					g.clearRect(x-Math.abs(x-w)-3,y-3, 6, 6);///the left north edge
-//					g.clearRect(x+(x-w)-3,y-(y-h)-3 , 6, 6);
-//					g.clearRect(x-(x-w)-3,y-(y-h)-3 ,6, 6);
-//					g.clearRect(x+Math.abs(x-w)-3,y-3, 6, 6);//the right nourth edge 
-//					dg.droow(g);
-//					System.out.println("clear   triangleeeeeeeeee");
-//				}
-//	    		if(pressed_shape4 && (e.getX()>(x-10)&& e.getX()<(x+10) &&e.getY()>y-10&&e.getY()<y+10 )|| (e.getX()>w-10&&e.getX()<w+10&&e.getY()>h-10 &&e.getY()<h+10)) {
-//					g.drawRect(x-3,y-3, 5, 5);
-//					g.drawRect(w-3,h-3 , 5, 5);
-//					isselected++;
-//					System.out.println("Sdsdsdssdssssssssssssssssss");
-//					pressed_shape=false;
-//					pressed_shape3=false;
-//				}else if(pressed_shape4 &&! (e.getX()>(x-10)&& e.getX()<(x+10) &&e.getY()>y-10&&e.getY()<y+10 )|| (e.getX()>w-10&&e.getX()<w+10&&e.getY()>h-10 &&e.getY()<h+10)) {
-//					g.clearRect(x-3,y-3, 6, 6);
-//					g.clearRect(w-3,h-3 , 6, 6);
-//				}
-//					else {
-//					canvse.repaint();
-//					d.drawRect(x, y, w, h);
-//				}
+							dg.refresh(canvse.getGraphics());
+							System.out.println("false");
+						}
+					}
+
+				}
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 			}
-			
+
 		});
+		canvse.addMouseMotionListener(new MouseMotionListener() {
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (isselect && canMove) {
+
+					int min = e.getX();
+					int max = typeshape.getval().y;
+					
+//							System.out.println(typeshape.getPosition());
+					typeshape.setPosition(e.getPoint());
+					if (typeshape.shaptype() == "Line") {
+						for (int i = 0; i < forLine.size(); i = i + 4) {
+							if (forLine.get(i) > forLine.get(i + 2)) {
+								if (forLine.get(i + 3) > forLine.get(i + 1)) {
+									typeshape.setPosition(e.getPoint());
+									min = e.getX() - typeshape.getval().x;
+								} else if (forLine.get(i + 1) > forLine.get(i + 3)) {
+									Point s = new Point();
+									s.x = e.getX() + typeshape.getval().x;
+									s.y = e.getY() + typeshape.getval().y;
+									typeshape.setPosition(s);
+									min = e.getX();
+								}
+							} else if (forLine.get(i + 2) > forLine.get(i)) {
+								if (forLine.get(i + 1) > forLine.get(i + 3)) {
+									Point s = new Point();
+									s.x = e.getX() - typeshape.getval().x;
+									s.y = e.getY() + typeshape.getval().y;
+									typeshape.setPosition(s);
+									min = e.getX() - typeshape.getval().x;
+								} else {
+									typeshape.setPosition(e.getPoint());
+									min = e.getX();
+									max = typeshape.getval().y;
+								}
+
+								// max=forLine.get(i+1)-forLine.get(i+3);
+							}
+							typeshape.setSelectionBounds(min, e.getY(), typeshape.getval().x, max);
+							
+
+						}
+					} else if (typeshape.shaptype() == "Triangle") {
+						int min1;
+						int max1;
+						System.out.println(forTriangle);
+						for (int i = 0; i < forTriangle.size(); i = i + 4) {
+							if (forTriangle.get(i) > forTriangle.get(i + 2)) {
+								if (forTriangle.get(i + 1) < forTriangle.get(i + 3)) {
+									System.out.println("first");
+									typeshape.setPosition(e.getPoint());
+									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x / 2, e.getY(),
+											typeshape.getval().x, typeshape.getval().y);
+									
+								} else if (forTriangle.get(i + 1) > forTriangle.get(i + 3)) {
+									System.out.println("secound");
+									Point s = new Point();
+									s.x = e.getX() - typeshape.getval().x / 2;
+									s.y = e.getY() + typeshape.getval().y;
+									typeshape.setPosition(s);
+									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x, e.getY(),
+											typeshape.getval().x, typeshape.getval().y);
+									
+								}
+							} else if (forTriangle.get(i) < forTriangle.get(i + 2)) {
+								if (forTriangle.get(i + 1) < forTriangle.get(i + 3)) {
+									System.out.println("third");
+									typeshape.setPosition(e.getPoint());
+									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x / 2, e.getY(),
+											typeshape.getval().x, typeshape.getval().y);
+									
+								} else if (forTriangle.get(i + 1) > forTriangle.get(i + 3)) {
+									System.out.println("fourth");
+									Point s = new Point();
+									s.x = e.getX() - typeshape.getval().x / 2;
+									s.y = e.getY() + typeshape.getval().y;
+									typeshape.setPosition(s);
+									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x, e.getY(),
+											typeshape.getval().x, typeshape.getval().y);
+									
+								}
+								
+							}
+							
+						}
+
+						System.out.println(
+								e.getX() + " " + e.getY() + " " + typeshape.getval().x + " " + typeshape.getval().y);
+						System.out.println("this" + forTriangle.get(0) + " " + forTriangle.get(1) + " "
+								+ forTriangle.get(2) + " " + forTriangle.get(3));
+
+					} else {
+						typeshape.setSelectionBounds(e.getX(), e.getY(), typeshape.getval().x, typeshape.getval().y);
+					}
+
+					System.out.println(
+							e.getX() + " " + e.getY() + " " + typeshape.getval().x + " " + typeshape.getval().y);
+					canvse.paint(canvse.getGraphics());
+					dg.refresh(canvse.getGraphics());
+				}
+
+			}
+		});
+
 	}
-	
+
+	Point pos = new Point();
+	Point lpos = new Point();
+	int x1, x2, y1, y2;
+
+	public void drawShape(Canvas canvse) {
+
+		canvse.addMouseListener(ml = new MouseListener() {
+
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			public void mouseExited(MouseEvent e) {
+			}
+
+			public void mousePressed(MouseEvent e) {
+				pos = e.getPoint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (numOfShape == 5) {
+					Color cc = color;
+					line l = new line();
+					lpos = e.getPoint();
+					l.setPosition(pos);
+					l.setLastPosition(lpos);
+					Graphics g = canvse.getGraphics();
+					g.setColor(cc);
+					l.setColor(cc);
+					Point hr = new Point();
+					hr = lpos;
+					dg.addShape(l);
+					l.draw(g);
+					dg.refresh(g);
+					forLine.add(pos.x);
+					forLine.add(pos.y);
+					forLine.add(lpos.x);
+					forLine.add(lpos.y);
+//	    			pressed_shape=true;
+					int minx = pos.x;
+					int miny = pos.y;
+					int minxx = Math.abs(lpos.x - pos.x);
+					;
+					int minyy = Math.abs(lpos.y - pos.y);
+					;
+					if (pos.x > lpos.x) {
+						minx = pos.x - minxx;
+
+					}
+					if (pos.y > lpos.y) {
+						miny = lpos.y;
+					}
+					selectedshape.add(l);
+					selectPositions.add(minx);
+					selectPositions.add(miny);
+					selectPositions.add(minxx);
+					selectPositions.add(minyy);
+					l.setSelectionBounds(minx, miny, minxx, minyy);
+//	    			cli(minx,miny,minxx,minyy);
+					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+					shapes.addAll(dg.allShapes);
+					dg.st.push(shapes);
+					dg.firstUndo = true;
+					canMove = true;
+					dg.stRedo.clear();
+					System.out.println(lpos.x + " " + pos.x + " " + Math.abs(lpos.x - pos.x));
+
+					Map<String, Double> m = new HashMap<>();
+					m.put("type", 5.0);
+					m.put("positionx", pos.getX());
+					m.put("positiony", pos.getY());
+					m.put("lastPositionx", lpos.getX());
+					m.put("color", (double) color.getRGB());
+					m.put("fillColor", (double) fillColor.getRGB());
+					m.put("lastPositiony", lpos.getY());
+					l.setProperties(m);
+					canvse.removeMouseListener(this);
+					canvse.removeMouseMotionListener(mx);
+				} else if (numOfShape == 6) {
+					ellipse el = new ellipse();
+					Point temp = new Point();
+					temp.x = pos.x;
+					temp.y = pos.y;
+					x2 = e.getX();
+					y2 = e.getY();
+					if (y2 < pos.y) {
+						temp.y = y2;
+						y2 = pos.y;
+					}
+					if (x2 < pos.x) {
+						temp.x = x2;
+						x2 = pos.x;
+					}
+					el.setPosition(temp);
+					Graphics g = canvse.getGraphics();
+					g.setColor(color);
+					el.setColor(color);
+					if (isfilled) {
+						el.setFillColor(fillColor);
+					}
+					Point hr = new Point();
+					hr.x = x2;
+					hr.y = y2;
+					el.setLastPosition(hr);
+					dg.addShape(el);
+					el.draw(g);
+					dg.refresh(g);
+					selectedshape.add(el);
+					selectPositions.add(temp.x);
+					selectPositions.add(temp.y);
+					selectPositions.add(Math.abs(temp.x - el.lastPos.x));
+					selectPositions.add(Math.abs(temp.y - el.lastPos.y));
+					el.setSelectionBounds(temp.x, temp.y, Math.abs(temp.x - el.lastPos.x),
+							Math.abs(temp.y - el.lastPos.y));
+//        			cli(temp.x,temp.y,Math.abs(temp.x-el.lastPos.x),Math.abs(temp.y-el.lastPos.y));
+//        			pressed_shape=true;
+					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+					shapes.addAll(dg.allShapes);
+					dg.st.push(shapes);
+					dg.firstUndo = true;
+					canMove = true;
+					dg.stRedo.clear();
+					Map<String, Double> m = new HashMap<>();
+					m.put("type", 6.0);
+					m.put("positionx", temp.getX());
+					m.put("positiony", temp.getY());
+					m.put("lastPositionx", hr.getX());
+					m.put("lastPositiony", hr.getY());
+					m.put("color", (double) color.getRGB());
+					m.put("fillColor", (double) fillColor.getRGB());
+					el.setProperties(m);
+					canvse.removeMouseListener(this);
+					canvse.removeMouseMotionListener(mx);
+				}
+			}
+
+		});
+		canvse.addMouseMotionListener(mx = new MouseMotionListener() {
+			@Override
+
+			public void mouseDragged(MouseEvent e) {
+
+				if (numOfShape == 5) {
+					Graphics g = canvse.getGraphics();
+					g.setColor(color);
+					lpos = e.getPoint();
+					g.drawLine(pos.x, pos.y, lpos.x, lpos.y);
+					canvse.repaint();
+					dg.refresh(g);
+					mx = this;
+				} else if (numOfShape == 6) {
+					Graphics g = canvse.getGraphics();
+					g.setColor(color);
+					Point dPos = new Point();
+					dPos = e.getPoint();
+					if (dPos.y < pos.y) {
+						y1 = dPos.y;
+						y2 = pos.y;
+					} else {
+						y1 = pos.y;
+						y2 = dPos.y;
+					}
+					if (dPos.x < pos.x) {
+						x1 = dPos.x;
+						x2 = pos.x;
+					} else {
+						x1 = pos.x;
+						x2 = dPos.x;
+					}
+					if (isfilled) {
+						g.fillArc(x1, y1, Math.abs(x1 - x2), Math.abs(y1 - y2), 0, 360);
+					}
+					g.drawArc(x1, y1, Math.abs(x1 - x2), Math.abs(y1 - y2), 0, 360);
+					canvse.repaint();
+					dg.refresh(g);
+					mx = this;
+				}
+			}
+
+			public void mouseMoved(MouseEvent e) {
+			}
+
+		});
+
+	}
+
+	int isselected = 0;
+	MouseListener mm;
+	int min;
+	int max;
+	int counter = 0;
+	boolean flag = false;
 }

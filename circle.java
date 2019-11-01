@@ -1,15 +1,19 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 public class circle extends ourshape {
 
-	int x,y;
+	int x,y, x2,y2;
 	int radios;
 	Color c=Color.black;
+	Color fillColor=Color.white;
+	Map<String, Double> Properties=new HashMap<String, Double>();
 	
 	public java.awt.Point getPosition(){
 		Point ans =new Point();
@@ -26,13 +30,20 @@ public class circle extends ourshape {
 
 	@Override
 	public void setProperties(Map<String, Double> properties) {
-		// TODO Auto-generated method stub
+		Properties=properties;
+		x2=(int)Math.round(Properties.get("lastPositionx"));
+		y2=(int)Math.round(Properties.get("lastPositiony"));
+		double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
+		radios=(int) Math.round(k);
 		
+
 	}
 
 	@Override
 	public Map<String, Double> getProperties() {
-		// TODO Auto-generated method stub
+		if(!Properties.isEmpty()) {
+			return Properties;
+		}
 		return null;
 	}
 
@@ -48,22 +59,32 @@ public class circle extends ourshape {
 
 	@Override
 	public void setFillColor(Color color) {
-		// TODO Auto-generated method stub
-		
+		fillColor=color;
 	}
 
 	@Override
 	public Color getFillColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return fillColor;
 	}
 
 	@Override
 	public void draw(Graphics canvas) {
+//		double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
+//		radios=(int) Math.round(k);
+		
+		if(fillColor.getRGB()!=-1) {
+			canvas.setColor(fillColor);
+			canvas.fillArc(x, y,radios,radios, 0, 360);
+		}
+		canvas.setColor(c);
 		canvas.drawArc(x, y, radios, radios, 0, 360);
 	}
-	public void setRad(int wi) {
-		this.radios=wi;
+	public void setDim(Point wi) {
+		x2=wi.x;
+		y2=wi.y;
+		double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
+		radios=(int) Math.round(k);
+		
 		
 	}
 	public Object clone() throws CloneNotSupportedException{
@@ -90,15 +111,20 @@ public class circle extends ourshape {
 		f.y=selecty;
 		return f;
 	}
-	public void border(Graphics g) {
-		// TODO Auto-generated method stub
-		g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
-		g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
-		g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
-		g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
-		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
-		g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
-		g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
-		g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+	public boolean isIn(int x,int y,Canvas canvse) {
+		 if(x> this.selectx&&x<this.selectx+this.selectlastx && y>this.selecty&&y<this.selectlasty+this.selecty) {
+			Graphics g=canvse.getGraphics();
+			g.drawRect(this.selectx-3,this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selecty-3 , 5, 5);
+			g.drawRect(this.selectx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,this.selectlasty+this.selecty-3, 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selecty-3) , 5, 5);
+			g.drawRect((this.selectx+this.selectlastx/2)-3,(this.selectlasty+this.selecty-3) , 5, 5);
+			g.drawRect(this.selectx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);
+			g.drawRect(this.selectx+this.selectlastx-3,(this.selecty+this.selectlasty/2)-3 , 5, 5);	
+			 return true;
+		 }
+		return false;
 	}
+	
 }
