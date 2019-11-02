@@ -1326,19 +1326,19 @@ public class Painter {
 						el.setFillColor(fillColor);
 					}
 					Point hr = new Point();
-					hr.x = Math.abs(temp.x-x2);
-					hr.y = Math.abs(temp.y-y2);
-					
+					hr.x = x2;
+					hr.y = y2;
+					el.setLastPosition(hr);
 					dg.addShape(el);
 					el.draw(g);
 					dg.refresh(g);
 					selectedshape.add(el);
 					selectPositions.add(temp.x);
 					selectPositions.add(temp.y);
-					selectPositions.add(Math.abs(temp.x - x2));
-					selectPositions.add(Math.abs(temp.y - y2));
-					el.setSelectionBounds(temp.x, temp.y, Math.abs(temp.x - x2),
-							Math.abs(temp.y - y2));
+					selectPositions.add(Math.abs(temp.x - el.lastPos.x));
+					selectPositions.add(Math.abs(temp.y - el.lastPos.y));
+					el.setSelectionBounds(temp.x, temp.y, Math.abs(temp.x - el.lastPos.x),
+							Math.abs(temp.y - el.lastPos.y));
 //        			cli(temp.x,temp.y,Math.abs(temp.x-el.lastPos.x),Math.abs(temp.y-el.lastPos.y));
 //        			pressed_shape=true;
 					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
@@ -1355,12 +1355,7 @@ public class Painter {
 					m.put("lastPositiony", hr.getY());
 					m.put("color", (double) color.getRGB());
 					m.put("fillColor", (double) fillColor.getRGB());
-					m.put("boundx",(double)temp.x);
-					m.put("boundy", (double) temp.y);
-					m.put("boundlastPositionx", (double) Math.abs(temp.x - el.lastPos.x));
-					m.put("boundlastPositiony", (double)Math.abs(temp.y - el.lastPos.y));
 					el.setProperties(m);
-					el.setLastPosition(hr);
 					canvse.removeMouseListener(this);
 					canvse.removeMouseMotionListener(mx);
 				}
