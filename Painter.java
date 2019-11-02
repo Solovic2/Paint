@@ -1355,6 +1355,10 @@ public class Painter {
 					m.put("lastPositiony", hr.getY());
 					m.put("color", (double) color.getRGB());
 					m.put("fillColor", (double) fillColor.getRGB());
+					m.put("boundx",(double)temp.x);
+					m.put("boundy", (double)temp.y);
+					m.put("boundlastPositionx", (double) Math.abs(temp.x - el.lastPos.x));
+					m.put("boundlastPositiony", (double) Math.abs(temp.y - el.lastPos.y));
 					el.setProperties(m);
 					canvse.removeMouseListener(this);
 					canvse.removeMouseMotionListener(mx);

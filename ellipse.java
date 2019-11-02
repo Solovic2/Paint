@@ -32,8 +32,12 @@ public class ellipse extends ourshape {
 		Properties=properties;
 		lastPos.x=(int)Math.round(Properties.get("lastPositionx"));
 		lastPos.y=(int)Math.round(Properties.get("lastPositiony"));
-		width=Math.abs(pos.x-lastPos.x);
-		height=Math.abs(pos.y-lastPos.y);
+		this.selectx= (int)Math.round(Properties.get("boundx"));
+		this.selecty = (int)Math.round(Properties.get("boundy"));
+		this.selectlastx = (int)Math.round(Properties.get("boundlastPositionx"));
+		this.selectlasty = (int)Math.round(Properties.get("boundlastPositiony"));
+		width=(int)Math.round(Properties.get("boundlastPositionx"));
+		height=(int)Math.round(Properties.get("boundlastPositiony"));
 	}
 
 	@Override
@@ -95,6 +99,16 @@ public class ellipse extends ourshape {
 		selecty=y;
 		selectlastx=w;
 		selectlasty=h;
+		Properties.put("positionx",(double)this.pos.x);
+		Properties.put("positiony", (double)this.pos.y);
+		Properties.put("lastPositionx", (double) this.lastPos.x);
+		Properties.put("lastPositiony", (double) this.lastPos.y);
+		Properties.put("color", (double) c.getRGB());
+		Properties.put("fillColor", (double) fillColor.getRGB());
+		Properties.put("boundx",(double)x);
+		Properties.put("boundy", (double) y);
+		Properties.put("boundlastPositionx", (double) w);
+		Properties.put("boundlastPositiony", (double) h);
 	}
 	
 	public Point getval() {
