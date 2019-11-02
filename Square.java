@@ -116,7 +116,7 @@ public class Square extends ourshape {
 		Properties.put("boundy", (double) y);
 		Properties.put("boundlastPositionx", (double) w);
 		Properties.put("boundlastPositiony", (double) h);
-		System.out.println("Ds");
+		
 	}
 
 	public Point getSelectionBounds() {

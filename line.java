@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public class line extends ourshape{
 	Point lpos=new Point();
 	Color c=Color.black;
 	Map<String, Double> Properties=new HashMap<String, Double>();
+	ArrayList<Integer> forLine = new ArrayList<Integer>();
 	int width;
 	int height;
 	@Override
@@ -29,6 +31,15 @@ public class line extends ourshape{
 		lpos.y=(int)Math.round(Properties.get("lastPositiony"));
 		width=pos.x-lpos.x;
 		height=pos.y-lpos.y;
+		this.selectx= (int)Math.round(Properties.get("boundx"));
+		this.selecty = (int)Math.round(Properties.get("boundy"));
+		this.selectlastx = (int)Math.round(Properties.get("boundlastPositionx"));
+		this.selectlasty = (int)Math.round(Properties.get("boundlastPositiony"));
+		forLine.add((int)Math.round(Properties.get("positionx")));
+		forLine.add((int)Math.round(Properties.get("positiony")));
+		forLine.add(lpos.x);
+		forLine.add(lpos.y);
+		System.out.println(selectx+" "+selecty+" "+selectlastx+" "+selectlasty);
 	}
 
 	@Override
@@ -75,6 +86,7 @@ public class line extends ourshape{
 		lpos=position;
 		width=pos.x-lpos.x;
 		height=pos.y-lpos.y;
+		
 	}
 	int selectx,selecty,selectlastx,selectlasty;
 	public void setSelectionBounds(int x,int y, int w,int h) {
@@ -82,6 +94,14 @@ public class line extends ourshape{
 		selecty=y;
 		selectlastx=w;
 		selectlasty=h;
+		Properties.put("positionx",(double)pos.x);
+		Properties.put("positiony", (double)pos.y);
+		Properties.put("lastPositionx", (double) pos.x-width);
+		Properties.put("lastPositiony", (double) pos.y-height);
+		Properties.put("boundx",(double)x);
+		Properties.put("boundy", (double) y);
+		Properties.put("boundlastPositionx", (double) w);
+		Properties.put("boundlastPositiony", (double) h);
 	}
 	
 	public Point getval() {

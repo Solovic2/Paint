@@ -36,6 +36,10 @@ public class Rectangle extends ourshape {
 		Properties=properties;
 		wid=(int)Math.round(Properties.get("lastPositionx"));
 		hie=(int)Math.round(Properties.get("lastPositiony"));
+		this.selectx= (int)Math.round(Properties.get("boundx"));
+		this.selecty = (int)Math.round(Properties.get("boundy"));
+		this.selectlastx = (int)Math.round(Properties.get("boundlastPositionx"));
+		this.selectlasty = (int)Math.round(Properties.get("boundlastPositiony"));
 	}
 
 	@Override
@@ -116,6 +120,16 @@ public class Rectangle extends ourshape {
 		this.selecty = y;
 		this.selectlastx = w;
 		this.selectlasty = h;
+		Properties.put("positionx",(double)posx);
+		Properties.put("positiony", (double)posy);
+		Properties.put("lastPositionx", (double) wid);
+		Properties.put("lastPositiony", (double) hie);
+		Properties.put("color", (double) c.getRGB());
+		Properties.put("fillColor", (double) fillColor.getRGB());
+		Properties.put("boundx",(double)x);
+		Properties.put("boundy", (double) y);
+		Properties.put("boundlastPositionx", (double) w);
+		Properties.put("boundlastPositiony", (double) h);
 	}
 
 	public Point getval() {

@@ -59,9 +59,7 @@ public class Painter {
 	Color color = Color.black;
 	Color fillColor = Color.white;
 	boolean isfilled = false;
-	ArrayList<Integer> selectPositions = new ArrayList<Integer>();
-	ArrayList<Integer> forLine = new ArrayList<Integer>();
-	ArrayList<Integer> forTriangle = new ArrayList<Integer>();
+	ArrayList<Integer> selectPositions = new ArrayList<Integer>();	
 	ArrayList<ourshape> selectedshape = new ArrayList<ourshape>();
 	private Cursor handCursor = new Cursor(Cursor.SE_RESIZE_CURSOR);
 	private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -399,6 +397,10 @@ public class Painter {
 						m.put("lastPositiony", (double) Math.abs(y - y2));
 						m.put("color", (double) color.getRGB());
 						m.put("fillColor", (double) fillColor.getRGB());
+						m.put("boundx",(double)temp.x);
+						m.put("boundy", (double) temp.y);
+						m.put("boundlastPositionx", (double) Math.abs(x - x2));
+						m.put("boundlastPositiony", (double) Math.abs(y - y2));
 						r.setProperties(m);
 						// cli(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
 						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
@@ -499,10 +501,10 @@ public class Painter {
 						t.draw(g);
 						dg.refresh(g);
 						selectedshape.add(t);
-						forTriangle.add(x);
-						forTriangle.add(y);
-						forTriangle.add(x2);
-						forTriangle.add(y2);
+						t.forTriangle.add(x);
+						t.forTriangle.add(y);
+						t.forTriangle.add(x2);
+						t.forTriangle.add(y2);
 						int min = temp.y;
 						int max = y2 - temp.y;
 						if (y > y2) {
@@ -524,7 +526,6 @@ public class Painter {
 						canMove = true;
 						dg.stRedo.clear();
 						Map<String, Double> m = new HashMap<>();
-
 						m.put("type", 3.0);
 						m.put("positionx", temp.getX());
 						m.put("positiony", temp.getY());
@@ -532,6 +533,10 @@ public class Painter {
 						m.put("lastPositiony", (double) y2);
 						m.put("color", (double) color.getRGB());
 						m.put("fillColor", (double) fillColor.getRGB());
+						m.put("boundx",(double)temp.x - Math.abs(temp.x - x2));
+						m.put("boundy", (double)  min);
+						m.put("boundlastPositionx", (double) 2 * Math.abs(temp.x - x2));
+						m.put("boundlastPositiony", (double) max);
 						t.setProperties(m);
 						canvse.removeMouseListener(this);
 						canvse.removeMouseMotionListener(mx);
@@ -662,8 +667,12 @@ public class Painter {
 						m.put("lastPositiony", (double) y2);
 						m.put("color", (double) color.getRGB());
 						m.put("fillColor", (double) fillColor.getRGB());
-						System.out.println(m);
+						m.put("boundx",(double)temp.x);
+						m.put("boundy", (double) temp.y);
+						m.put("boundlastPositionx",(double) h);
+						m.put("boundlastPositiony", (double) h);
 						c.setProperties(m);
+						
 						canvse.removeMouseListener(this);
 						canvse.removeMouseMotionListener(mx);
 					}
@@ -900,126 +909,126 @@ public class Painter {
 		button_1.setBounds(380, 32, 67, 24);
 		panel_1.add(button_1);
 
-		Button button_2 = new Button("Resize");
-		button_2.addActionListener(new ActionListener() {
-			int x, y, x2, y2;
-
-			public void actionPerformed(ActionEvent e) {
-				if (isselect) {
-
-					canvse.addMouseListener(new MouseListener() {
-						@Override
-						public void mouseReleased(MouseEvent e) {
-
-						}
-
-						@Override
-						public void mousePressed(MouseEvent e) {
-							// TODO Auto-generated method stub
-
-							if (typeshape.resize(e.getX(), e.getY())) {
-								x = e.getX();
-								y = e.getY();
-
-							}
-
-						}
-
-						@Override
-						public void mouseExited(MouseEvent e) {
-							// TODO Auto-generated method stub
-
-						}
-
-						@Override
-						public void mouseEntered(MouseEvent e) {
-							// TODO Auto-generated method stub
-						}
-
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							// TODO Auto-generated method stub
-
-						}
-					});
-					canvse.addMouseMotionListener(new MouseMotionListener() {
-
-						@Override
-						public void mouseMoved(MouseEvent e) {
-							// TODO Auto-generated method stub
-
-							if (typeshape.resize(e.getX(), e.getY()) && canMove) {
-								System.out.println(typeshape.getcounter());
-								switch (typeshape.getcounter()) {
-
-								case 1:
-									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
-									resizeCounter = 1;
-									break;
-								case 2:
-									canvse.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
-									resizeCounter = 2;
-									break;
-								case 3:
-									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
-									resizeCounter = 3;
-									break;
-								case 4:
-									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
-									resizeCounter = 4;
-									break;
-								case 5:
-									canvse.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
-									resizeCounter = 5;
-									break;
-								case 6:
-									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
-									resizeCounter = 6;
-									break;
-								case 7:
-									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
-									resizeCounter = 7;
-									break;
-								case 8:
-									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
-									resizeCounter = 8;
-									break;
-								}
-
-							} else if (!typeshape.resize(e.getX(), e.getY())) {
-								canvse.setCursor(defaultCursor);
-							}
-
-						}
-
-						@Override
-						public void mouseDragged(MouseEvent e) {
-							// TODO Auto-generated method stub\
-
-							x2 = e.getX();
-							y2 = e.getY();
-							Point s = new Point();
-							s.x = x;
-							s.y = y;
-							int wids = typeshape.getwid_hie().x;
-							canvse.getGraphics().clearRect(typeshape.getPosition().x, typeshape.getPosition().y,
-									typeshape.getwid_hie().x, typeshape.getwid_hie().y);
-							typeshape.getResize(x, y, x2, y2, resizeCounter, canvse);
-
-							canvse.paint(canvse.getGraphics());
-							System.out.println(x2 + " " + y2);
-							typeshape.draw(canvse.getGraphics());
-
-//											canvse.getGraphics().drawArc(x, y,Math.abs(x2-x), Math.abs(y2-y),0,360);
-							System.out.println(x + " " + y2 + " " + (x - x2) + " " + y2);
-
-						}
-					});
-				}
-			}
-		});
-		button_2.setBounds(251, 62, 67, 24);
-		panel_1.add(button_2);
+//		Button button_2 = new Button("Resize");
+//		button_2.addActionListener(new ActionListener() {
+//			int x, y, x2, y2;
+//
+//			public void actionPerformed(ActionEvent e) {
+//				if (isselect) {
+//
+//					canvse.addMouseListener(new MouseListener() {
+//						@Override
+//						public void mouseReleased(MouseEvent e) {
+//
+//						}
+//
+//						@Override
+//						public void mousePressed(MouseEvent e) {
+//							// TODO Auto-generated method stub
+//
+//							if (typeshape.resize(e.getX(), e.getY())) {
+//								x = e.getX();
+//								y = e.getY();
+//
+//							}
+//
+//						}
+//
+//						@Override
+//						public void mouseExited(MouseEvent e) {
+//							// TODO Auto-generated method stub
+//
+//						}
+//
+//						@Override
+//						public void mouseEntered(MouseEvent e) {
+//							// TODO Auto-generated method stub
+//						}
+//
+//						@Override
+//						public void mouseClicked(MouseEvent e) {
+//							// TODO Auto-generated method stub
+//
+//						}
+//					});
+//					canvse.addMouseMotionListener(new MouseMotionListener() {
+//
+//						@Override
+//						public void mouseMoved(MouseEvent e) {
+//							// TODO Auto-generated method stub
+//
+//							if (typeshape.resize(e.getX(), e.getY()) && canMove) {
+//								System.out.println(typeshape.getcounter());
+//								switch (typeshape.getcounter()) {
+//
+//								case 1:
+//									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+//									resizeCounter = 1;
+//									break;
+//								case 2:
+//									canvse.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
+//									resizeCounter = 2;
+//									break;
+//								case 3:
+//									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
+//									resizeCounter = 3;
+//									break;
+//								case 4:
+//									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
+//									resizeCounter = 4;
+//									break;
+//								case 5:
+//									canvse.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+//									resizeCounter = 5;
+//									break;
+//								case 6:
+//									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+//									resizeCounter = 6;
+//									break;
+//								case 7:
+//									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+//									resizeCounter = 7;
+//									break;
+//								case 8:
+//									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+//									resizeCounter = 8;
+//									break;
+//								}
+//
+//							} else if (!typeshape.resize(e.getX(), e.getY())) {
+//								canvse.setCursor(defaultCursor);
+//							}
+//
+//						}
+//
+//						@Override
+//						public void mouseDragged(MouseEvent e) {
+//							// TODO Auto-generated method stub\
+//
+//							x2 = e.getX();
+//							y2 = e.getY();
+//							Point s = new Point();
+//							s.x = x;
+//							s.y = y;
+//							int wids = typeshape.getwid_hie().x;
+//							canvse.getGraphics().clearRect(typeshape.getPosition().x, typeshape.getPosition().y,
+//									typeshape.getwid_hie().x, typeshape.getwid_hie().y);
+//							typeshape.getResize(x, y, x2, y2, resizeCounter, canvse);
+//
+//							canvse.paint(canvse.getGraphics());
+//							System.out.println(x2 + " " + y2);
+//							typeshape.draw(canvse.getGraphics());
+//
+////											canvse.getGraphics().drawArc(x, y,Math.abs(x2-x), Math.abs(y2-y),0,360);
+//							System.out.println(x + " " + y2 + " " + (x - x2) + " " + y2);
+//
+//						}
+//					});
+//				}
+//			}
+//		});
+//		button_2.setBounds(251, 62, 67, 24);
+//		panel_1.add(button_2);
 		boolean isfound = false;
 
 		buttons = 7;
@@ -1031,7 +1040,7 @@ public class Painter {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-
+				
 			}
 
 			public void mousePressed(MouseEvent e) {
@@ -1105,81 +1114,83 @@ public class Painter {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if (isselect && canMove) {
-
+//						isfound=true;
 					int min = e.getX();
 					int max = typeshape.getval().y;
 					
 //							System.out.println(typeshape.getPosition());
 					typeshape.setPosition(e.getPoint());
 					if (typeshape.shaptype() == "Line") {
-						for (int i = 0; i < forLine.size(); i = i + 4) {
-							if (forLine.get(i) > forLine.get(i + 2)) {
-								if (forLine.get(i + 3) > forLine.get(i + 1)) {
-									typeshape.setPosition(e.getPoint());
-									min = e.getX() - typeshape.getval().x;
-								} else if (forLine.get(i + 1) > forLine.get(i + 3)) {
+						line l=(line) typeshape;
+						for (int i = 0; i < l.forLine.size(); i = i + 4) {
+							if (l.forLine.get(i) > l.forLine.get(i + 2)) {
+								if (l.forLine.get(i + 3) > l.forLine.get(i + 1)) {
+									l.setPosition(e.getPoint());
+									min = e.getX() - l.getval().x;
+								} else if (l.forLine.get(i + 1) > l.forLine.get(i + 3)) {
 									Point s = new Point();
-									s.x = e.getX() + typeshape.getval().x;
-									s.y = e.getY() + typeshape.getval().y;
-									typeshape.setPosition(s);
+									s.x = e.getX() + l.getval().x;
+									s.y = e.getY() + l.getval().y;
+									l.setPosition(s);
 									min = e.getX();
 								}
-							} else if (forLine.get(i + 2) > forLine.get(i)) {
-								if (forLine.get(i + 1) > forLine.get(i + 3)) {
+							} else if (l.forLine.get(i + 2) > l.forLine.get(i)) {
+								if (l.forLine.get(i + 1) > l.forLine.get(i + 3)) {
 									Point s = new Point();
-									s.x = e.getX() - typeshape.getval().x;
-									s.y = e.getY() + typeshape.getval().y;
-									typeshape.setPosition(s);
-									min = e.getX() - typeshape.getval().x;
+									s.x = e.getX() - l.getval().x;
+									s.y = e.getY() + l.getval().y;
+									l.setPosition(s);
+									min = e.getX() - l.getval().x;
 								} else {
-									typeshape.setPosition(e.getPoint());
+									l.setPosition(e.getPoint());
 									min = e.getX();
-									max = typeshape.getval().y;
+									max = l.getval().y;
 								}
 
 								// max=forLine.get(i+1)-forLine.get(i+3);
 							}
-							typeshape.setSelectionBounds(min, e.getY(), typeshape.getval().x, max);
+							l.setSelectionBounds(min, e.getY(), l.getval().x, max);
 							
 
 						}
 					} else if (typeshape.shaptype() == "Triangle") {
+						Triangle t=(Triangle) typeshape;
 						int min1;
 						int max1;
-						System.out.println(forTriangle);
-						for (int i = 0; i < forTriangle.size(); i = i + 4) {
-							if (forTriangle.get(i) > forTriangle.get(i + 2)) {
-								if (forTriangle.get(i + 1) < forTriangle.get(i + 3)) {
+						System.out.println(t.forTriangle);
+						for (int i = 0; i < t.forTriangle.size(); i = i + 4) {
+							if (t.forTriangle.get(i) > t.forTriangle.get(i + 2)) {
+								if (t.forTriangle.get(i + 1) < t.forTriangle.get(i + 3)) {
 									System.out.println("first");
-									typeshape.setPosition(e.getPoint());
-									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x / 2, e.getY(),
-											typeshape.getval().x, typeshape.getval().y);
+									t.setPosition(e.getPoint());
+									t.setSelectionBounds(e.getX() - t.getval().x / 2, e.getY(),
+											t.getval().x, t.getval().y);
 									
-								} else if (forTriangle.get(i + 1) > forTriangle.get(i + 3)) {
+								} else if (t.forTriangle.get(i + 1) > t.forTriangle.get(i + 3)) {
 									System.out.println("secound");
 									Point s = new Point();
-									s.x = e.getX() - typeshape.getval().x / 2;
-									s.y = e.getY() + typeshape.getval().y;
-									typeshape.setPosition(s);
-									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x, e.getY(),
-											typeshape.getval().x, typeshape.getval().y);
+									s.x = e.getX() - t.getval().x / 2;
+									s.y = e.getY() + t.getval().y;
+									t.setPosition(s);
+									t.setSelectionBounds(e.getX() - t.getval().x, e.getY(),
+											t.getval().x, t.getval().y);
 									
 								}
-							} else if (forTriangle.get(i) < forTriangle.get(i + 2)) {
-								if (forTriangle.get(i + 1) < forTriangle.get(i + 3)) {
+							} else if (t.forTriangle.get(i) < t.forTriangle.get(i + 2)) {
+								if (t.forTriangle.get(i + 1) < t.forTriangle.get(i + 3)) {
 									System.out.println("third");
-									typeshape.setPosition(e.getPoint());
-									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x / 2, e.getY(),
-											typeshape.getval().x, typeshape.getval().y);
+									t.setPosition(e.getPoint());
+									t.setSelectionBounds(e.getX() - t.getval().x / 2, e.getY(),
+											t.getval().x, t.getval().y);
 									
-								} else if (forTriangle.get(i + 1) > forTriangle.get(i + 3)) {
+								} else if (t.forTriangle.get(i + 1) >t.forTriangle.get(i + 3)) {
 									System.out.println("fourth");
 									Point s = new Point();
-									s.x = e.getX() - typeshape.getval().x / 2;
-									s.y = e.getY() + typeshape.getval().y;
-									typeshape.setPosition(s);
-									typeshape.setSelectionBounds(e.getX() - typeshape.getval().x, e.getY(),
-											typeshape.getval().x, typeshape.getval().y);
+									s.x = e.getX() - t.getval().x / 2;
+									s.y = e.getY() + t.getval().y;
+									t.setPosition(s);
+									t.setSelectionBounds(e.getX() - t.getval().x, e.getY(),
+											t.getval().x, t.getval().y);
 									
 								}
 								
@@ -1188,9 +1199,9 @@ public class Painter {
 						}
 
 						System.out.println(
-								e.getX() + " " + e.getY() + " " + typeshape.getval().x + " " + typeshape.getval().y);
-						System.out.println("this" + forTriangle.get(0) + " " + forTriangle.get(1) + " "
-								+ forTriangle.get(2) + " " + forTriangle.get(3));
+								e.getX() + " " + e.getY() + " " + t.getval().x + " " + t.getval().y);
+						System.out.println("this" +t.forTriangle.get(0) + " " + t.forTriangle.get(1) + " "
+								+ t.forTriangle.get(2) + " " + t.forTriangle.get(3));
 
 					} else {
 						typeshape.setSelectionBounds(e.getX(), e.getY(), typeshape.getval().x, typeshape.getval().y);
@@ -1244,10 +1255,10 @@ public class Painter {
 					dg.addShape(l);
 					l.draw(g);
 					dg.refresh(g);
-					forLine.add(pos.x);
-					forLine.add(pos.y);
-					forLine.add(lpos.x);
-					forLine.add(lpos.y);
+					l.forLine.add(pos.x);
+					l.forLine.add(pos.y);
+					l.forLine.add(lpos.x);
+					l.forLine.add(lpos.y);
 //	    			pressed_shape=true;
 					int minx = pos.x;
 					int miny = pos.y;
@@ -1285,6 +1296,10 @@ public class Painter {
 					m.put("color", (double) color.getRGB());
 					m.put("fillColor", (double) fillColor.getRGB());
 					m.put("lastPositiony", lpos.getY());
+					m.put("boundx",(double)minx);
+					m.put("boundy", (double)miny);
+					m.put("boundlastPositionx", (double) minxx);
+					m.put("boundlastPositiony", (double) minyy);
 					l.setProperties(m);
 					canvse.removeMouseListener(this);
 					canvse.removeMouseMotionListener(mx);
@@ -1311,19 +1326,19 @@ public class Painter {
 						el.setFillColor(fillColor);
 					}
 					Point hr = new Point();
-					hr.x = x2;
-					hr.y = y2;
-					el.setLastPosition(hr);
+					hr.x = Math.abs(temp.x-x2);
+					hr.y = Math.abs(temp.y-y2);
+					
 					dg.addShape(el);
 					el.draw(g);
 					dg.refresh(g);
 					selectedshape.add(el);
 					selectPositions.add(temp.x);
 					selectPositions.add(temp.y);
-					selectPositions.add(Math.abs(temp.x - el.lastPos.x));
-					selectPositions.add(Math.abs(temp.y - el.lastPos.y));
-					el.setSelectionBounds(temp.x, temp.y, Math.abs(temp.x - el.lastPos.x),
-							Math.abs(temp.y - el.lastPos.y));
+					selectPositions.add(Math.abs(temp.x - x2));
+					selectPositions.add(Math.abs(temp.y - y2));
+					el.setSelectionBounds(temp.x, temp.y, Math.abs(temp.x - x2),
+							Math.abs(temp.y - y2));
 //        			cli(temp.x,temp.y,Math.abs(temp.x-el.lastPos.x),Math.abs(temp.y-el.lastPos.y));
 //        			pressed_shape=true;
 					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
@@ -1340,7 +1355,12 @@ public class Painter {
 					m.put("lastPositiony", hr.getY());
 					m.put("color", (double) color.getRGB());
 					m.put("fillColor", (double) fillColor.getRGB());
+					m.put("boundx",(double)temp.x);
+					m.put("boundy", (double) temp.y);
+					m.put("boundlastPositionx", (double) Math.abs(temp.x - el.lastPos.x));
+					m.put("boundlastPositiony", (double)Math.abs(temp.y - el.lastPos.y));
 					el.setProperties(m);
+					el.setLastPosition(hr);
 					canvse.removeMouseListener(this);
 					canvse.removeMouseMotionListener(mx);
 				}

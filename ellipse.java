@@ -13,8 +13,8 @@ public class ellipse extends ourshape {
 	Color c=Color.black;
 	Color fillColor=Color.white;
 	Map<String, Double> Properties=new HashMap<String, Double>();
-	int width;
-	int height;
+	int width=0;
+	int height=0;
 	int counter =0;
 	
 	public java.awt.Point getPosition(){
@@ -30,10 +30,14 @@ public class ellipse extends ourshape {
 	@Override
 	public void setProperties(Map<String, Double> properties) {
 		Properties=properties;
-		lastPos.x=(int)Math.round(Properties.get("lastPositionx"));
-		lastPos.y=(int)Math.round(Properties.get("lastPositiony"));
-		width=Math.abs(pos.x-lastPos.x);
-		height=Math.abs(pos.y-lastPos.y);
+		width=(int)Math.round(Properties.get("lastPositionx"));
+		height=(int)Math.round(Properties.get("lastPositiony"));
+		this.selectx= (int)Math.round(Properties.get("boundx"));
+		this.selecty = (int)Math.round(Properties.get("boundy"));
+		this.selectlastx = (int)Math.round(Properties.get("boundlastPositionx"));
+		this.selectlasty = (int)Math.round(Properties.get("boundlastPositiony"));
+//		width=Math.abs(pos.x-lastPos.x);
+//		height=Math.abs(pos.y-lastPos.y);
 	}
 
 	@Override
@@ -81,8 +85,8 @@ public class ellipse extends ourshape {
 	}
 	public void setLastPosition(Point position) {
 		lastPos=position;
-		width=Math.abs(pos.x-lastPos.x);
-		height=Math.abs(pos.y-lastPos.y);
+		width=lastPos.x;
+		height=lastPos.y;
 		System.out.println(" "+lastPos+" "+pos.x+" "+pos.y);
 	}
 	public Point getwid_hie() {
@@ -95,6 +99,17 @@ public class ellipse extends ourshape {
 		selecty=y;
 		selectlastx=w;
 		selectlasty=h;
+		Properties.put("positionx",(double)pos.x);
+		Properties.put("positiony", (double)pos.y);
+		Properties.put("lastPositionx", (double) width);
+		Properties.put("lastPositiony", (double) height);
+		Properties.put("color", (double) c.getRGB());
+		Properties.put("fillColor", (double) fillColor.getRGB());
+		Properties.put("boundx",(double)x);
+		Properties.put("boundy", (double) y);
+		Properties.put("boundlastPositionx", (double) w);
+		Properties.put("boundlastPositiony", (double) h);
+		
 	}
 	
 	public Point getval() {

@@ -104,7 +104,7 @@ boolean firstUndo=true;
 				}else {
 //					if(firstUndo) {
 						System.out.println("********before***********");
-						System.out.println("Here is Stack "+st);
+						System.out.println("Here is Stack "+st.peek());
 			    		System.out.println("Here is Shapes "+allShapes);
 			    		
 						stRedo.add(st.pop());
@@ -177,6 +177,7 @@ boolean firstUndo=true;
 			String bounds=""+allShapes.get(i).getProperties().get("boundx")+","+allShapes.get(i).getProperties().get("boundy")
 					+","+allShapes.get(i).getProperties().get("boundlastPositionx")+","+allShapes.get(i).getProperties().get("boundlastPositiony");
 			arr.put(ss);
+			System.out.println(allShapes.get(i).getProperties());
 			arr.put(colors);
 			arr.put(bounds);
 			obj.put(""+(i), arr);
@@ -296,6 +297,7 @@ boolean firstUndo=true;
 						t.setColor(Color.getColor((obj.getAsJsonArray(""+i).get(0).toString()),(int)Math.round(Double.valueOf(color[0]))));
 						t.setFillColor(Color.getColor((obj.getAsJsonArray(""+i).get(1).toString()),(int)Math.round(Double.valueOf(color[1]))));
 						allShapes.add(t);
+						System.out.println(m);
 						
 					}
 					else if(pos[0].equals("4.0")) {
@@ -310,10 +312,11 @@ boolean firstUndo=true;
 						pp=new Point();
 						pp.x=(int) Math.round(Double.valueOf(pos[3]));
 						pp.y=(int) Math.round(Double.valueOf(pos[4]));
-						c.setDim(pp);
+//						c.setDim(pp);
 						c.setColor(Color.getColor((obj.getAsJsonArray(""+i).get(0).toString()),(int)Math.round(Double.valueOf(color[0]))));
 						c.setFillColor(Color.getColor((obj.getAsJsonArray(""+i).get(1).toString()),(int)Math.round(Double.valueOf(color[1]))));
 						allShapes.add(c);
+						
 	
 					}else if(pos[0].equals("5.0")) {
 						m.put("type", 5.0);
@@ -345,7 +348,7 @@ boolean firstUndo=true;
 						pp=new Point();
 						pp.x=(int) Math.round(Double.valueOf(pos[3]));
 						pp.y=(int) Math.round(Double.valueOf(pos[4]));
-						el.setLastPosition(pp);
+//						el.setLastPosition(pp);
 						el.setColor(Color.getColor((obj.getAsJsonArray(""+i).get(0).toString()),(int)Math.round(Double.valueOf(color[0]))));
 						el.setFillColor(Color.getColor((obj.getAsJsonArray(""+i).get(1).toString()),(int)Math.round(Double.valueOf(color[1]))));
 						allShapes.add(el);
@@ -364,6 +367,8 @@ boolean firstUndo=true;
 	//		catch(ParseException e) {e.printStackTrace();}
 			catch(Exception e) {e.printStackTrace();}
 		}
+		st.add(allShapes);
+		System.out.println("Here is the stak sd "+st);
 	}
 
 public void droow(Graphics canvas) {
