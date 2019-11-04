@@ -22,8 +22,10 @@ import java.awt.BorderLayout;
 
 import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.FlowLayout;
@@ -32,6 +34,7 @@ import java.awt.CardLayout;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import java.awt.Button;
@@ -40,6 +43,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import java.awt.SystemColor;
+import java.awt.ComponentOrientation;
+import java.awt.Insets;
 
 public class Painter {
 
@@ -49,7 +55,7 @@ public class Painter {
 	MouseMotionListener mx;
 	int numOfShape = 0;
 	Canvas canvse = new Canvas();
-
+	boolean isfound = false;
 	boolean pressed_shape = false;
 	ourshape typeshape;
 	int typeIndex;
@@ -64,7 +70,7 @@ public class Painter {
 	private Cursor handCursor = new Cursor(Cursor.SE_RESIZE_CURSOR);
 	private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 	int resizeCounter = 0;
-
+	ourshape sh;
 	/**
 	 * Launch the application.
 	 */
@@ -93,6 +99,7 @@ public class Painter {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(SystemColor.windowText);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setSize(2500, 2000);
@@ -100,8 +107,8 @@ public class Painter {
 		frame.getContentPane().setLayout(null);
 		canvse.setBackground(Color.WHITE);
 
-		canvse.setSize(1924, 855);
-		canvse.setLocation(0, 200);
+		canvse.setSize(1924, 864);
+		canvse.setLocation(0, 170);
 		canvse.setPreferredSize(new Dimension(2000, 1500));
 		canvse.setMaximumSize(new Dimension(2000, 1500));
 		canvse.setMinimumSize(new Dimension(2000, 1500));
@@ -109,27 +116,31 @@ public class Painter {
 		frame.getContentPane().add(canvse);
 
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.GRAY);
+		panel.setBackground(SystemColor.window);
 		panel.setAutoscrolls(true);
 		panel.setIgnoreRepaint(true);
 		panel.setForeground(Color.BLACK);
-		panel.setBounds(0, 0, 1924, 200);
+		panel.setBounds(0, 0, 1924, 160);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 1371, 25);
+		menuBar.setBackground(SystemColor.window);
+		menuBar.setBounds(0, 0, 600, 27);
 		panel.add(menuBar);
 
 		JMenuItem mntmNewMenuItem = new JMenuItem("File");
+		mntmNewMenuItem.setBackground(SystemColor.window);
 		mntmNewMenuItem.setMaximumSize(new Dimension(100, 100));
 		menuBar.add(mntmNewMenuItem);
 
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Edit");
+		mntmNewMenuItem_1.setBackground(SystemColor.window);
 		mntmNewMenuItem_1.setMaximumSize(new Dimension(100, 100));
 		menuBar.add(mntmNewMenuItem_1);
 
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
+		mntmNewMenuItem_2.setBackground(SystemColor.window);
 		mntmNewMenuItem_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -158,6 +169,7 @@ public class Painter {
 		menuBar.add(mntmNewMenuItem_2);
 
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Load");
+		mntmNewMenuItem_3.setBackground(SystemColor.window);
 		mntmNewMenuItem_3.addMouseListener(new MouseAdapter() {
 			Graphics g = canvse.getGraphics();
 
@@ -186,18 +198,27 @@ public class Painter {
 					}
 
 				}
-				dg.droow(g);
+				dg.refresh(g);;
 			}
 		});
 		mntmNewMenuItem_3.setMaximumSize(new Dimension(100, 100));
 		menuBar.add(mntmNewMenuItem_3);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(100, 25, 500, 100);
+		panel_1.setMinimumSize(new Dimension(80, 80));
+		panel_1.setMaximumSize(new Dimension(200, 200));
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(0, 25, 771, 140);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		// **************************square***********************
-		Button square = new Button("Square");
+		JButton square = new JButton("");
+		square.setBackground(Color.WHITE);
+		ImageIcon square_shape = new ImageIcon("src\\square.png");
+		int square_shape_scale = 15; 
+		int square_shape_width = square_shape.getIconWidth();
+		int square_shape_newWidth = square_shape_width / square_shape_scale;
+		square.setIcon(new ImageIcon(square_shape.getImage().getScaledInstance(square_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		square.addActionListener(new ActionListener() {
 			int x, y, x2, y2;
 			int psx;
@@ -324,10 +345,16 @@ public class Painter {
 			}
 
 		});
-		square.setBounds(0, 0, 60, 25);
+		square.setBounds(0, 0, 85, 88);
 		panel_1.add(square);
 		// ***************************rectangle*******************
-		Button rectangle = new Button("Rectangle");
+		JButton rectangle = new JButton("");
+		rectangle.setBackground(Color.WHITE);
+		ImageIcon rectangle_shape = new ImageIcon("src\\rectangle.png");
+		int rectangle_shape_scale = 10; 
+		int rectangle_shape_width = rectangle_shape.getIconWidth();
+		int rectangle_shape_newWidth = rectangle_shape_width / rectangle_shape_scale;
+		rectangle.setIcon(new ImageIcon(rectangle_shape.getImage().getScaledInstance(rectangle_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		rectangle.addActionListener(new ActionListener() {
 
 			int x, y, x2, y2;
@@ -445,10 +472,16 @@ public class Painter {
 			}
 		});
 
-		rectangle.setBounds(0, 31, 60, 25);
+		rectangle.setBounds(85, 0, 85, 88);
 		panel_1.add(rectangle);
 		// **************************Trianglr*********************
-		Button triangle = new Button("Triangle");
+		JButton triangle = new JButton("");
+		triangle.setBackground(Color.WHITE);
+		ImageIcon triangle_shape = new ImageIcon("src\\triangle.png");
+		int triangle_shape_scale = 10; 
+		int triangle_shape_width = triangle_shape.getIconWidth();
+		int triangle_shape_newWidth = triangle_shape_width / triangle_shape_scale;
+		triangle.setIcon(new ImageIcon(triangle_shape.getImage().getScaledInstance(triangle_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		triangle.addActionListener(new ActionListener() {
 
 			int x, y, x2, y2;
@@ -588,10 +621,17 @@ public class Painter {
 
 			}
 		});
-		triangle.setBounds(0, 62, 60, 25);
+		triangle.setBounds(255, 0, 85, 88);
 		panel_1.add(triangle);
 		// **************************circle***********************
-		Button circle = new Button("circle");
+		JButton circle = new JButton("");
+		circle.setBackground(Color.WHITE);
+		ImageIcon circle_shape = new ImageIcon("src\\circle.png");
+		int circle_shape_scale = 10; 
+		int circle_shape_width = circle_shape.getIconWidth();
+		int circle_shape_newWidth = circle_shape_width / circle_shape_scale;
+		circle.setIcon(new ImageIcon(circle_shape.getImage().getScaledInstance(circle_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
+		
 		circle.addActionListener(new ActionListener() {
 
 			int x, y, x2, y2;
@@ -710,10 +750,16 @@ public class Painter {
 
 		});
 		circle.setActionCommand("circle");
-		circle.setBounds(75, 1, 67, 24);
+		circle.setBounds(425, 0, 85, 87);
 		panel_1.add(circle);
 		// *********************ellipse****************************
-		Button ellipse = new Button("ellipse");
+		JButton ellipse = new JButton("");
+		ellipse.setBackground(Color.WHITE);
+		ImageIcon ellipse_shape = new ImageIcon("src\\ellipse.png");
+		int ellipse_shape_scale = 2; 
+		int ellipse_shape_width = ellipse_shape.getIconWidth();
+		int ellipse_shape_newWidth = ellipse_shape_width / ellipse_shape_scale;
+		ellipse.setIcon(new ImageIcon(ellipse_shape.getImage().getScaledInstance(ellipse_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		ellipse.addActionListener(new ActionListener() {
 //        	ellipse el=new ellipse();
 //        	Point fPos=new Point();
@@ -786,12 +832,18 @@ public class Painter {
 //        		});
 			}
 		});
-		ellipse.setBounds(75, 31, 67, 24);
+		ellipse.setBounds(340, 0, 85, 87);
 		panel_1.add(ellipse);
 
 		// *******************Line**********************
 
-		Button line = new Button("Line");
+		JButton line = new JButton("");
+		line.setBackground(Color.WHITE);
+		ImageIcon line_shape = new ImageIcon("src\\Line.png");
+		int line_shape_scale = 10; 
+		int line_shape_width = line_shape.getIconWidth();
+		int line_shape_newWidth = line_shape_width / line_shape_scale;
+		line.setIcon(new ImageIcon(line_shape.getImage().getScaledInstance(line_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		line.addActionListener(new ActionListener() {
 //        	line l=new line();
 //        	Point pos=new Point();
@@ -805,57 +857,20 @@ public class Painter {
 			}
 		});
 		line.setActionCommand("Line");
-		line.setBounds(75, 62, 67, 24);
+		line.setBounds(170, 0, 85, 87);
 		panel_1.add(line);
-		JMenuBar mb = new JMenuBar();
-		mb.setBackground(Color.WHITE);
-		mb.setBounds(168, 2, 40, 25);
-		panel_1.add(mb);
+		ImageIcon menu_shape = new ImageIcon("src\\menu.png");
+		int menu_shape_scale = 2; 
+		int menu_shape_width = menu_shape.getIconWidth();
+		int menu_shape_newWidth = menu_shape_width / menu_shape_scale;
 
-		// create a menu
-		JMenu x = new JMenu("color");
-		mb.add(x);
-
-		// create menuitems
-		JMenuItem m1 = new JMenuItem(" ");
-		m1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				color = Color.red;
-				fillColor = Color.red;
-				isfilled = true;
-			}
-		});
-		m1.setBackground(Color.RED);
-		JMenuItem m2 = new JMenuItem(" ");
-		m2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				color = Color.blue;
-				fillColor = Color.blue;
-				isfilled = true;
-			}
-		});
-		m2.setPreferredSize(new Dimension(60, 20));
-		m2.setMaximumSize(new Dimension(200, 20));
-		m2.setBackground(Color.BLUE);
-		JMenuItem m3 = new JMenuItem(" ");
-		m3.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				color = Color.yellow;
-				fillColor = Color.yellow;
-				isfilled = true;
-			}
-		});
-		m3.setBackground(Color.YELLOW);
-
-		// add menu items to menu
-		x.add(m1);
-		x.add(m2);
-		x.add(m3);
-
-		JButton btnNewButton = new JButton("Remove");
+		JButton btnNewButton = new JButton("");
+		btnNewButton.setBackground(Color.WHITE);
+		ImageIcon erase = new ImageIcon("src\\remove.png");
+		int line_scale = 2; 
+		int line_width = erase.getIconWidth();
+		int line_newWidth = line_width / line_scale;
+		btnNewButton.setIcon(new ImageIcon(erase.getImage().getScaledInstance(line_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (isselect) {
@@ -869,12 +884,19 @@ public class Painter {
 					dg.stRedo.clear();
 					dg.refresh(canvse.getGraphics());
 				}
+				isselect=false;
 			}
 		});
-		btnNewButton.setBounds(148, 62, 97, 25);
+		btnNewButton.setBounds(151, 86, 60, 47);
 		panel_1.add(btnNewButton);
 
-		Button button = new Button("Undo");
+		JButton button = new JButton("");
+		button.setBackground(Color.WHITE);
+		ImageIcon btnundo = new ImageIcon("src\\undo.png");
+		int undo_scale = 1; 
+		int undo_width = btnundo.getIconWidth();
+		int undo_newWidth = undo_width / undo_scale;
+		button.setIcon(new ImageIcon(btnundo.getImage().getScaledInstance(undo_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -887,10 +909,16 @@ public class Painter {
 				dg.refresh(canvse.getGraphics());
 			}
 		});
-		button.setBounds(252, 32, 67, 24);
+		button.setBounds(210, 86, 60, 47);
 		panel_1.add(button);
 
-		Button button_1 = new Button("Redo");
+		JButton button_1 = new JButton("");
+		button_1.setBackground(Color.WHITE);
+		ImageIcon btnredo = new ImageIcon("src\\redo.png");
+		int redo_scale = 1; 
+		int redo_width = btnredo.getIconWidth();
+		int redo_newWidth = redo_width / redo_scale;
+		button_1.setIcon(new ImageIcon(btnredo.getImage().getScaledInstance(redo_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (dg.stRedo.isEmpty()) {
@@ -906,8 +934,64 @@ public class Painter {
 
 			}
 		});
-		button_1.setBounds(380, 32, 67, 24);
+		button_1.setBounds(262, 86, 60, 47);
 		panel_1.add(button_1);
+								JMenuBar mb = new JMenuBar();
+								mb.setPreferredSize(new Dimension(0, 0));
+								mb.setMinimumSize(new Dimension(0, 0));
+								mb.setMaximumSize(new Dimension(0, 0));
+								mb.setBounds(510, 0, 85, 87);
+								panel_1.add(mb);
+								mb.setBackground(Color.WHITE);
+					
+							// create a menu
+							JMenu x = new JMenu("");
+							mb.add(x);
+							x.setBackground(Color.WHITE);
+							x.setMinimumSize(new Dimension(100, 100));
+							x.setMaximumSize(new Dimension(200, 200));
+							x.setPreferredSize(new Dimension(80, 80));
+							
+							x.setIcon(new ImageIcon(menu_shape.getImage().getScaledInstance(menu_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
+							
+									// create menuitems
+									JMenuItem m1 = new JMenuItem(" ");
+									m1.addMouseListener(new MouseAdapter() {
+										@Override
+										public void mousePressed(MouseEvent e) {
+											color = Color.red;
+											fillColor = Color.red;
+											isfilled = true;
+										}
+									});
+									m1.setBackground(Color.RED);
+									JMenuItem m2 = new JMenuItem(" ");
+									m2.addMouseListener(new MouseAdapter() {
+										@Override
+										public void mousePressed(MouseEvent e) {
+											color = Color.blue;
+											fillColor = Color.blue;
+											isfilled = true;
+										}
+									});
+									m2.setPreferredSize(new Dimension(60, 20));
+									m2.setMaximumSize(new Dimension(200, 20));
+									m2.setBackground(Color.BLUE);
+									JMenuItem m3 = new JMenuItem(" ");
+									m3.addMouseListener(new MouseAdapter() {
+										@Override
+										public void mousePressed(MouseEvent e) {
+											color = Color.yellow;
+											fillColor = Color.yellow;
+											isfilled = true;
+										}
+									});
+									m3.setBackground(Color.YELLOW);
+									
+											// add menu items to menu
+											x.add(m1);
+											x.add(m2);
+											x.add(m3);
 
 //		Button button_2 = new Button("Resize");
 //		button_2.addActionListener(new ActionListener() {
@@ -1029,7 +1113,7 @@ public class Painter {
 //		});
 //		button_2.setBounds(251, 62, 67, 24);
 //		panel_1.add(button_2);
-		boolean isfound = false;
+		
 
 		buttons = 7;
 		Graphics2D gr = (Graphics2D) canvse.getGraphics();
@@ -1039,7 +1123,20 @@ public class Painter {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
+				if(!isfound) {
+					dg.removeShape(typeshape);
+					dg.addShape(sh);
+					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+					shapes.addAll(dg.allShapes);
+					dg.st.pop();
+					dg.st.push(shapes);
+					dg.removeShape(sh);
+					dg.addShape(typeshape);
+					shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
+					shapes.addAll(dg.allShapes);
+					dg.st.push(shapes);
+					isfound=true;
+				}
 				
 			}
 
@@ -1047,6 +1144,7 @@ public class Painter {
 				canvse.paint(canvse.getGraphics());
 				dg.refresh(canvse.getGraphics());
 				isselect = false;
+				isfound=true;
 //        				System.out.println(e.getX()+" "+x +" "+w+"\n"+e.getY()+" "+y+" "+h+' ' );
 				// TODO Auto-generated method stub
 				if (true) {
@@ -1114,11 +1212,95 @@ public class Painter {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if (isselect && canMove) {
-//						isfound=true;
+						
+					if(isfound) {
+						if(typeshape.getProperties().get("type")==1.0) {
+						sh=new Square();
+						sh.setProperties(selectedshape.get(typeIndex).getProperties());
+						sh.setPosition(selectedshape.get(typeIndex).getPosition());
+						sh.setColor(selectedshape.get(typeIndex).getColor());
+						sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
+						sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
+						
+						System.out.println("sh  "+sh);
+						System.out.println("type shape  "+typeshape);
+						System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
+						System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
+						
+						}else if(typeshape.getProperties().get("type")==2.0) {
+							sh=new Rectangle();
+							sh.setProperties(selectedshape.get(typeIndex).getProperties());
+							sh.setPosition(selectedshape.get(typeIndex).getPosition());
+							sh.setColor(selectedshape.get(typeIndex).getColor());
+							sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
+							sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
+							
+							System.out.println("sh  "+sh);
+							System.out.println("type shape  "+typeshape);
+							System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
+							System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
+							
+							}else if(typeshape.getProperties().get("type")==4.0) {
+								sh=new circle();
+								sh.setProperties(selectedshape.get(typeIndex).getProperties());
+								sh.setPosition(selectedshape.get(typeIndex).getPosition());
+								sh.setColor(selectedshape.get(typeIndex).getColor());
+								sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
+								sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
+								
+								System.out.println("sh  "+sh);
+								System.out.println("type shape  "+typeshape);
+								System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
+								System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
+								
+								}else if(typeshape.getProperties().get("type")==5.0) {
+									sh=new line();
+									
+									sh.setPosition(selectedshape.get(typeIndex).getPosition());
+									sh.setColor(selectedshape.get(typeIndex).getColor());
+									sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
+									sh.setProperties(selectedshape.get(typeIndex).getProperties());
+									sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
+
+									System.out.println("sh  "+sh);
+									System.out.println("type shape  "+typeshape);
+									System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
+									System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
+									
+									}else if(typeshape.getProperties().get("type")==6.0) {
+										sh=new ellipse();
+										sh.setProperties(selectedshape.get(typeIndex).getProperties());
+										sh.setPosition(selectedshape.get(typeIndex).getPosition());
+										sh.setColor(selectedshape.get(typeIndex).getColor());
+										sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
+										sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
+										
+										System.out.println("sh  "+sh);
+										System.out.println("type shape  "+typeshape);
+										System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
+										System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
+										
+										}else if(typeshape.getProperties().get("type")==3.0) {
+											sh=new Triangle();
+											sh.setPosition(selectedshape.get(typeIndex).getPosition());
+											sh.setColor(selectedshape.get(typeIndex).getColor());
+											sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
+											sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
+											sh.setProperties(selectedshape.get(typeIndex).getProperties());
+											sh.setDim(selectedshape.get(typeIndex).getwid_hie().x,selectedshape.get(typeIndex).getwid_hie().y);
+											System.out.println("sh  "+sh);
+											System.out.println("type shape  "+typeshape);
+											System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
+											System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
+											
+											}
+						
+						dg.stRedo.clear();
+						isfound=false;
+					}
 					int min = e.getX();
 					int max = typeshape.getval().y;
 					
-//							System.out.println(typeshape.getPosition());
 					typeshape.setPosition(e.getPoint());
 					if (typeshape.shaptype() == "Line") {
 						line l=(line) typeshape;
