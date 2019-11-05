@@ -27,7 +27,6 @@ public class circle extends ourshape {
 	public void setPosition(Point position) {
 		x=position.x;
 		y=position.y;
-		System.out.println(x+" "+y);
 	}
 
 	@Override
@@ -39,11 +38,7 @@ public class circle extends ourshape {
 		this.selecty = (int)Math.round(Properties.get("boundy"));
 		this.selectlastx = (int)Math.round(Properties.get("boundlastPositionx"));
 		this.selectlasty = (int)Math.round(Properties.get("boundlastPositiony"));
-//		 double j=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-		System.out.println("this is posx "+x+" posy "+y+" x2 "+x2+" y2 "+y2);
 		radios=(int)Math.round(Properties.get("boundlastPositionx"));
-		System.out.println(Properties);
-		System.out.println("dat radious "+ radios);
 	}
 
 	@Override
@@ -76,32 +71,23 @@ public class circle extends ourshape {
 
 	@Override
 	public void draw(Graphics canvas) {
-//		double k=Math.sqrt(Math.pow(y-y2, 2)+Math.pow(x-x2, 2));
-//		radios=(int) Math.round(k);
-		
 		if(fillColor.getRGB()!=-1) {
 			canvas.setColor(fillColor);
 			canvas.fillArc(x, y,radios,radios, 0, 360);
 		}
 		canvas.setColor(c);
 		canvas.drawArc(x, y, radios, radios, 0, 360);
-		System.out.println("raaaaaaasm "+x+" "+y+" "+radios);
 	}
 	public void setDim(Point wi) {
 		x2=wi.x;
 		y2=wi.y;
-		System.out.println(x2+"h eee r"+y2+" "+x+" "+y);
 		double k=Math.sqrt(Math.pow(this.y-this.y2, 2)+Math.pow(this.x-this.x2, 2));
-		System.out.println(k);
-		radios=(int) Math.round(k);
-		System.out.println(x2+" "+y2+" "+radios);
-		
+		radios=(int) Math.round(k);		
 	}
 	public Object clone() throws CloneNotSupportedException{
 		return c;
 		
 	}
-	
 	public void setSelectionBounds(int x,int y, int w,int h) {
 		selectx=x;
 		selecty=y;
@@ -117,7 +103,6 @@ public class circle extends ourshape {
 		Properties.put("boundy", (double) y);
 		Properties.put("boundlastPositionx", (double) w);
 		Properties.put("boundlastPositiony", (double) h);
-		System.out.println(this.x+" "+this.y+" "+x2+" "+y2 +" "+x+" "+y+" "+w+" "+h);
 	}
 	
 	public Point getval() {

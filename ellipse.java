@@ -87,7 +87,6 @@ public class ellipse extends ourshape {
 		lastPos=position;
 		width=Math.abs(pos.x-lastPos.x);
 		height=Math.abs(pos.y-lastPos.y);
-		System.out.println(" "+lastPos+" "+pos.x+" "+pos.y);
 	}
 	public Point getwid_hie() {
 
@@ -140,100 +139,5 @@ public class ellipse extends ourshape {
 			 return true;
 		 }
 		return false;
-	}
-
-	public boolean resize(int x, int y) {
-		if ((x >= pos.x - 3 && x < pos.x + 3 && y >= pos.y - 3 && y < pos.y + 3)) {
-			counter = 1;
-			return true;
-		}
-		if (x >= pos.x + width - 3 && x < pos.x + width + 3 && y >= pos.y - 3 && y <pos.y + 3) {
-			counter = 4;
-			return true;
-		}
-		if (x >= pos.x + width - 3 && x < pos.x +width + 3 && y >= height +pos.y - 3&& y < height + pos.y + 3) {
-			counter = 6;
-			return true;
-		}
-		if (x >= pos.x - 3 && x < pos.x + 3 && y >= height + pos.y - 3 && y < height + pos.y + 3) {
-			counter = 3;
-			return true;
-		}
-		if (x >= (pos.x + width / 2) - 3 && x < (pos.x + width / 2) + 3 && y >= pos.y - 3
-				&& y < pos.y + 3) {
-			counter = 7;
-			return true;
-		}
-		if (x >= (pos.x + width / 2) - 3 && x < (pos.x + width / 2) + 3 && y >=height + pos.y - 3
-				&& y < height + pos.y + 3) {
-			counter = 8;
-			return true;
-		}
-		if (x >= pos.x - 3 && x < pos.x + 3 && y >= (pos.y + height / 2) - 3
-				&& y < (pos.y + height / 2) + 3) {
-			counter = 2;
-			return true;
-		}
-		if (x >= pos.x +width - 3 && x < pos.x + width + 3 && y >= (pos.y + height / 2) - 3
-				&& y < (pos.y + height / 2) + 3) {
-			counter = 5;
-			return true;
-		}
-
-		return false;
-	}
-
-	public void getResize(int x, int y, int w, int h, int counts, Canvas canvse) {
-		int wids = width;
-		Point s = new Point();
-		switch (counts) {
-
-		case 1:
-			s.x = x;
-			s.y = y;
-			this.setPosition(s);
-			lastPos.x=w;
-			lastPos.y=h;
-			this.setLastPosition(lastPos);
-			
-			setSelectionBounds(x, y,Math.abs(w-x), Math.abs(h-y));
-			break;
-		case 3:
-			s.x = x;
-			s.y = h;
-			this.setPosition(s);
-			System.out.println(s);
-			h = y - h;
-			lastPos.x=w;
-			lastPos.y=y - h;
-			this.setLastPosition(lastPos);
-			
-			setSelectionBounds(x, y,Math.abs(w-x), Math.abs(h-y));
-			break;
-		case 4:
-			s.x = w;
-			s.y = y;
-			this.setPosition(s);
-			w = x - w;
-			lastPos.x=x - w;
-			lastPos.y=h;
-			this.setLastPosition(lastPos);
-			setSelectionBounds(x, y, w, h);
-			break;
-		case 6:
-			s.x = x - wids;
-			s.y = h;
-			this.setPosition(s);
-			h = y - h;
-			lastPos.x= w;
-			lastPos.y=y - h;
-			this.setLastPosition(lastPos);
-			setSelectionBounds(x, y, w, h);
-
-			break;
-		}
-	}
-	public int getcounter() {
-		return counter;
 	}
 }

@@ -101,4 +101,6 @@ private Point last;
 	public int getcounter() {
 		return 0;
 	}
+	public void setDim(int wi,int hi ) {
+	}
 }

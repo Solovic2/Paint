@@ -39,7 +39,6 @@ public class line extends ourshape{
 		forLine.add((int)Math.round(Properties.get("positiony")));
 		forLine.add(lpos.x);
 		forLine.add(lpos.y);
-		System.out.println(selectx+" "+selecty+" "+selectlastx+" "+selectlasty);
 	}
 
 	@Override

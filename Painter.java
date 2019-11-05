@@ -140,6 +140,10 @@ public class Painter {
 		menuBar.add(mntmNewMenuItem_1);
 
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
+		mntmNewMenuItem_2.setFocusable(true);
+		mntmNewMenuItem_2.setFocusTraversalPolicyProvider(true);
+		mntmNewMenuItem_2.setFocusCycleRoot(true);
+		mntmNewMenuItem_2.setFocusPainted(true);
 		mntmNewMenuItem_2.setBackground(SystemColor.window);
 		mntmNewMenuItem_2.addMouseListener(new MouseAdapter() {
 			@Override
@@ -214,7 +218,7 @@ public class Painter {
 		// **************************square***********************
 		JButton square = new JButton("");
 		square.setBackground(Color.WHITE);
-		ImageIcon square_shape = new ImageIcon("src\\square.png");
+		ImageIcon square_shape = new ImageIcon("src/square.png");
 		int square_shape_scale = 15; 
 		int square_shape_width = square_shape.getIconWidth();
 		int square_shape_newWidth = square_shape_width / square_shape_scale;
@@ -287,17 +291,8 @@ public class Painter {
 						m.put("boundy", (double) temp.y);
 						m.put("boundlastPositionx", (double) psx);
 						m.put("boundlastPositiony", (double) psx);
-						System.out.println(m);
 						sq.setProperties(m);
-						
-//        			pressed_shape=true;
 						selectedshape.add(sq);
-//						selectPositions.add(temp.x);
-//						selectPositions.add(temp.y);
-//						selectPositions.add(psx);
-//						selectPositions.add(psx);
-						System.out.println("squaere");
-//        			cli(temp.x,temp.y,psx,psx);
 						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
 						shapes.addAll(dg.allShapes);
 						dg.st.push(shapes);
@@ -334,6 +329,7 @@ public class Painter {
 						}
 						g.drawRect(temp.x, temp.y, psx, psx);
 						canvse.repaint();
+						canvse.paint(g);
 						dg.refresh(g);
 
 					}
@@ -350,7 +346,7 @@ public class Painter {
 		// ***************************rectangle*******************
 		JButton rectangle = new JButton("");
 		rectangle.setBackground(Color.WHITE);
-		ImageIcon rectangle_shape = new ImageIcon("src\\rectangle.png");
+		ImageIcon rectangle_shape = new ImageIcon("src/rectangle.png");
 		int rectangle_shape_scale = 10; 
 		int rectangle_shape_width = rectangle_shape.getIconWidth();
 		int rectangle_shape_newWidth = rectangle_shape_width / rectangle_shape_scale;
@@ -406,11 +402,7 @@ public class Painter {
 						dg.addShape(r);
 						r.draw(g);
 						dg.refresh(g);
-
-//	        			pressed_shape=true;
 						selectedshape.add(r);
-						System.out.println(pressed_shape);
-						System.out.println("in rect" + temp.x + "," + temp.y);
 						selectPositions.add(temp.x);
 						selectPositions.add(temp.y);
 						selectPositions.add(Math.abs(x - x2));
@@ -429,7 +421,6 @@ public class Painter {
 						m.put("boundlastPositionx", (double) Math.abs(x - x2));
 						m.put("boundlastPositiony", (double) Math.abs(y - y2));
 						r.setProperties(m);
-						// cli(temp.x,temp.y, Math.abs(x-x2), Math.abs(y-y2));
 						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
 						shapes.addAll(dg.allShapes);
 						dg.st.push(shapes);
@@ -477,7 +468,7 @@ public class Painter {
 		// **************************Trianglr*********************
 		JButton triangle = new JButton("");
 		triangle.setBackground(Color.WHITE);
-		ImageIcon triangle_shape = new ImageIcon("src\\triangle.png");
+		ImageIcon triangle_shape = new ImageIcon("src/triangle.png");
 		int triangle_shape_scale = 10; 
 		int triangle_shape_width = triangle_shape.getIconWidth();
 		int triangle_shape_newWidth = triangle_shape_width / triangle_shape_scale;
@@ -550,8 +541,6 @@ public class Painter {
 						selectPositions.add(2 * Math.abs(temp.x - x2));
 						selectPositions.add(max);
 						t.setSelectionBounds(temp.x - Math.abs(temp.x - x2), min, 2 * Math.abs(temp.x - x2), max);
-//	        			cli(temp.x-Math.abs(temp.x-x2),min,2*Math.abs(temp.x-x2),max);
-//	        			pressed_shape=true;
 						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
 						shapes.addAll(dg.allShapes);
 						dg.st.push(shapes);
@@ -626,7 +615,7 @@ public class Painter {
 		// **************************circle***********************
 		JButton circle = new JButton("");
 		circle.setBackground(Color.WHITE);
-		ImageIcon circle_shape = new ImageIcon("src\\circle.png");
+		ImageIcon circle_shape = new ImageIcon("src/circle.png");
 		int circle_shape_scale = 10; 
 		int circle_shape_width = circle_shape.getIconWidth();
 		int circle_shape_newWidth = circle_shape_width / circle_shape_scale;
@@ -684,15 +673,11 @@ public class Painter {
 						c.setSelectionBounds(temp.x, temp.y, h, h);
 						dg.addShape(c);
 						dg.refresh(g);
-//	        			pressed_shape=true;
 						selectedshape.add(c);
 						selectPositions.add(temp.x);
 						selectPositions.add(temp.y);
 						selectPositions.add(h);
 						selectPositions.add(h);
-//	        			selectedshape=c;
-
-//	        			cli(temp.x,temp.y,h,h);
 						ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
 						shapes.addAll(dg.allShapes);
 						dg.st.push(shapes);
@@ -755,81 +740,18 @@ public class Painter {
 		// *********************ellipse****************************
 		JButton ellipse = new JButton("");
 		ellipse.setBackground(Color.WHITE);
-		ImageIcon ellipse_shape = new ImageIcon("src\\ellipse.png");
+		ImageIcon ellipse_shape = new ImageIcon("src/ellipse.png");
 		int ellipse_shape_scale = 2; 
 		int ellipse_shape_width = ellipse_shape.getIconWidth();
 		int ellipse_shape_newWidth = ellipse_shape_width / ellipse_shape_scale;
 		ellipse.setIcon(new ImageIcon(ellipse_shape.getImage().getScaledInstance(ellipse_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		ellipse.addActionListener(new ActionListener() {
-//        	ellipse el=new ellipse();
-//        	Point fPos=new Point();
-//        	Point lPos=new Point();
-//        	int x1,x2,y1,y2;
-//        	
 			public void actionPerformed(ActionEvent e) {
 				canMove = false;
 				canvse.removeMouseListener(ml);
 				canvse.removeMouseMotionListener(mx);
 				numOfShape = 6;
 				drawShape(canvse);
-//        		canvse.addMouseListener(ml=new MouseListener() {
-//   
-//                    public void mouseClicked(MouseEvent e) {}
-//					public void mouseEntered(MouseEvent e) {}
-//					public void mouseExited(MouseEvent e) {}
-//					public void mousePressed(MouseEvent e) {
-//						 fPos=e.getPoint();
-//					}
-//
-//					@Override
-//					public void mouseReleased(MouseEvent e) {
-////						Point temp=new Point ();
-////						temp.x=fPos.x;
-////						temp.y=fPos.y;
-////						x2 = e.getX();
-////	                    y2 = e.getY();
-////	                    
-////	                    if(y2<fPos.y) {temp.y=y2;y2=fPos.y;}
-////	                    if(x2<fPos.x) {temp.x=x2;x2=fPos.x;}
-////	                    el.setPosition(temp);
-////	                    Graphics g = canvse.getGraphics();
-////	        			Point hr =new Point();
-////	        			hr.x=x2;
-////	        			hr.y=y2;
-////	        			el.lastPos.x=x2;
-////	                    el.lastPos.y=y2;
-////	        			shapes.add("6,"+temp.x+","+temp.y+","+x2+","+y2);
-////	        			dg.setlastpost(hr);
-////	        			dg.addShape(el);
-////	        			el.draw(g);
-////	        			redraw(canvse);
-////	        			canvse.removeMouseListener(this);
-////	        			canvse.removeMouseMotionListener(mx);
-////	        			
-//					}
-//        	});
-//        		canvse.addMouseMotionListener(mx=new MouseMotionListener() {
-//        			
-//					@Override
-//					public void mouseDragged(MouseEvent e) {
-//						Graphics g = canvse.getGraphics();
-//						Point dPos=new Point();
-//						dPos=e.getPoint();
-//						if(dPos.y<fPos.y) {
-//		                    	y1=dPos.y;
-//		                    	y2=fPos.y;
-//		                    }else {y1=fPos.y;y2=dPos.y;}
-//		                    if(dPos.x<fPos.x) {
-//		                    	x1=dPos.x;
-//		                    	x2=fPos.x;
-//		                    }else {x1=fPos.x;x2=dPos.x;}  	
-//	        			g.drawArc(x1, y1,Math.abs(x1-x2),Math.abs(y1-y2), 0, 360);
-//	        			canvse.repaint();
-//	        			redraw(canvse);
-//	        			mx=this;
-//					}
-//					public void mouseMoved(MouseEvent e) {}
-//        		});
 			}
 		});
 		ellipse.setBounds(340, 0, 85, 87);
@@ -839,15 +761,12 @@ public class Painter {
 
 		JButton line = new JButton("");
 		line.setBackground(Color.WHITE);
-		ImageIcon line_shape = new ImageIcon("src\\Line.png");
+		ImageIcon line_shape = new ImageIcon("src/Line.png");
 		int line_shape_scale = 10; 
 		int line_shape_width = line_shape.getIconWidth();
 		int line_shape_newWidth = line_shape_width / line_shape_scale;
 		line.setIcon(new ImageIcon(line_shape.getImage().getScaledInstance(line_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 		line.addActionListener(new ActionListener() {
-//        	line l=new line();
-//        	Point pos=new Point();
-//        	Point lpos=new Point();
 			public void actionPerformed(ActionEvent e) {
 				canMove = false;
 				canvse.removeMouseListener(ml);
@@ -859,14 +778,14 @@ public class Painter {
 		line.setActionCommand("Line");
 		line.setBounds(170, 0, 85, 87);
 		panel_1.add(line);
-		ImageIcon menu_shape = new ImageIcon("src\\menu.png");
+		ImageIcon menu_shape = new ImageIcon("src/menu.png");
 		int menu_shape_scale = 2; 
 		int menu_shape_width = menu_shape.getIconWidth();
 		int menu_shape_newWidth = menu_shape_width / menu_shape_scale;
 
 		JButton btnNewButton = new JButton("");
 		btnNewButton.setBackground(Color.WHITE);
-		ImageIcon erase = new ImageIcon("src\\remove.png");
+		ImageIcon erase = new ImageIcon("src/remove.png");
 		int line_scale = 2; 
 		int line_width = erase.getIconWidth();
 		int line_newWidth = line_width / line_scale;
@@ -892,7 +811,7 @@ public class Painter {
 
 		JButton button = new JButton("");
 		button.setBackground(Color.WHITE);
-		ImageIcon btnundo = new ImageIcon("src\\undo.png");
+		ImageIcon btnundo = new ImageIcon("src/undo.png");
 		int undo_scale = 1; 
 		int undo_width = btnundo.getIconWidth();
 		int undo_newWidth = undo_width / undo_scale;
@@ -914,7 +833,7 @@ public class Painter {
 
 		JButton button_1 = new JButton("");
 		button_1.setBackground(Color.WHITE);
-		ImageIcon btnredo = new ImageIcon("src\\redo.png");
+		ImageIcon btnredo = new ImageIcon("src/redo.png");
 		int redo_scale = 1; 
 		int redo_width = btnredo.getIconWidth();
 		int redo_newWidth = redo_width / redo_scale;
@@ -926,10 +845,7 @@ public class Painter {
 
 				}
 				canvse.paint(canvse.getGraphics());
-				System.out.println(dg.stRedo);
 				dg.redo();
-				System.out.println(dg.allShapes);
-
 				dg.refresh(canvse.getGraphics());
 
 			}
@@ -951,7 +867,6 @@ public class Painter {
 							x.setMinimumSize(new Dimension(100, 100));
 							x.setMaximumSize(new Dimension(200, 200));
 							x.setPreferredSize(new Dimension(80, 80));
-							
 							x.setIcon(new ImageIcon(menu_shape.getImage().getScaledInstance(menu_shape_newWidth, -1, java.awt.Image.SCALE_SMOOTH)));
 							
 									// create menuitems
@@ -987,138 +902,24 @@ public class Painter {
 										}
 									});
 									m3.setBackground(Color.YELLOW);
-									
+									JMenuItem m4 = new JMenuItem(" ");
+									m4.addMouseListener(new MouseAdapter() {
+										@Override
+										public void mousePressed(MouseEvent e) {
+											color = Color.black;
+											fillColor = Color.white;
+											isfilled = true;
+										}
+									});
+									m4.setBackground(Color.WHITE);
 											// add menu items to menu
+											x.add(m4);
 											x.add(m1);
 											x.add(m2);
 											x.add(m3);
-
-//		Button button_2 = new Button("Resize");
-//		button_2.addActionListener(new ActionListener() {
-//			int x, y, x2, y2;
-//
-//			public void actionPerformed(ActionEvent e) {
-//				if (isselect) {
-//
-//					canvse.addMouseListener(new MouseListener() {
-//						@Override
-//						public void mouseReleased(MouseEvent e) {
-//
-//						}
-//
-//						@Override
-//						public void mousePressed(MouseEvent e) {
-//							// TODO Auto-generated method stub
-//
-//							if (typeshape.resize(e.getX(), e.getY())) {
-//								x = e.getX();
-//								y = e.getY();
-//
-//							}
-//
-//						}
-//
-//						@Override
-//						public void mouseExited(MouseEvent e) {
-//							// TODO Auto-generated method stub
-//
-//						}
-//
-//						@Override
-//						public void mouseEntered(MouseEvent e) {
-//							// TODO Auto-generated method stub
-//						}
-//
-//						@Override
-//						public void mouseClicked(MouseEvent e) {
-//							// TODO Auto-generated method stub
-//
-//						}
-//					});
-//					canvse.addMouseMotionListener(new MouseMotionListener() {
-//
-//						@Override
-//						public void mouseMoved(MouseEvent e) {
-//							// TODO Auto-generated method stub
-//
-//							if (typeshape.resize(e.getX(), e.getY()) && canMove) {
-//								System.out.println(typeshape.getcounter());
-//								switch (typeshape.getcounter()) {
-//
-//								case 1:
-//									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
-//									resizeCounter = 1;
-//									break;
-//								case 2:
-//									canvse.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
-//									resizeCounter = 2;
-//									break;
-//								case 3:
-//									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
-//									resizeCounter = 3;
-//									break;
-//								case 4:
-//									canvse.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
-//									resizeCounter = 4;
-//									break;
-//								case 5:
-//									canvse.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
-//									resizeCounter = 5;
-//									break;
-//								case 6:
-//									canvse.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
-//									resizeCounter = 6;
-//									break;
-//								case 7:
-//									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
-//									resizeCounter = 7;
-//									break;
-//								case 8:
-//									canvse.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
-//									resizeCounter = 8;
-//									break;
-//								}
-//
-//							} else if (!typeshape.resize(e.getX(), e.getY())) {
-//								canvse.setCursor(defaultCursor);
-//							}
-//
-//						}
-//
-//						@Override
-//						public void mouseDragged(MouseEvent e) {
-//							// TODO Auto-generated method stub\
-//
-//							x2 = e.getX();
-//							y2 = e.getY();
-//							Point s = new Point();
-//							s.x = x;
-//							s.y = y;
-//							int wids = typeshape.getwid_hie().x;
-//							canvse.getGraphics().clearRect(typeshape.getPosition().x, typeshape.getPosition().y,
-//									typeshape.getwid_hie().x, typeshape.getwid_hie().y);
-//							typeshape.getResize(x, y, x2, y2, resizeCounter, canvse);
-//
-//							canvse.paint(canvse.getGraphics());
-//							System.out.println(x2 + " " + y2);
-//							typeshape.draw(canvse.getGraphics());
-//
-////											canvse.getGraphics().drawArc(x, y,Math.abs(x2-x), Math.abs(y2-y),0,360);
-//							System.out.println(x + " " + y2 + " " + (x - x2) + " " + y2);
-//
-//						}
-//					});
-//				}
-//			}
-//		});
-//		button_2.setBounds(251, 62, 67, 24);
-//		panel_1.add(button_2);
-		
-
+/* ************************************************Select And Move ********************************************* */
 		buttons = 7;
 		Graphics2D gr = (Graphics2D) canvse.getGraphics();
-//        		pressed_shape=true;
-
 		canvse.addMouseListener(mm = new MouseListener() {
 
 			@Override
@@ -1145,72 +946,36 @@ public class Painter {
 				dg.refresh(canvse.getGraphics());
 				isselect = false;
 				isfound=true;
-//        				System.out.println(e.getX()+" "+x +" "+w+"\n"+e.getY()+" "+y+" "+h+' ' );
-				// TODO Auto-generated method stub
+/* ************************************************Select ********************************************* */
 				if (true) {
-					System.out.println(selectedshape.size());
 					selectedshape.clear();
 					selectedshape.addAll((Collection<? extends ourshape>) dg.allShapes);
-
 					for (int j = 0; j < selectedshape.size(); j++) {
-						int f1;
-						int f2;
-						int f3;
-						int f4;
-						System.out.println(selectedshape.get(j));
-						System.out.println("x,y " + selectedshape.get(j).getSelectionBounds() + "w,h "
-								+ selectedshape.get(j).getval() + "when i press " + e.getPoint());
-//	            		        	 f1=selectedshape.get(j).getSelectionBounds().x;
-//	            		        	 f2=selectedshape.get(j).getval().x+selectedshape.get(j).getSelectionBounds().x ;
-//	            		        	 f3=selectedshape.get(j).getSelectionBounds().y;
-//	            		        	 f4=selectedshape.get(j).getSelectionBounds().y+selectedshape.get(j).getval().y;
 						if (selectedshape.get(j).isIn(e.getX(), e.getY(), canvse)) {
 							typeshape = selectedshape.get(j);
 							isselect = true;
 							typeIndex = j;
-
 							pressed_shape = true;
-//	            		                	 dg.firstUndo=true;
 							break;
-
 						} else {
-
 							dg.refresh(canvse.getGraphics());
-							System.out.println("false");
 						}
 					}
-
 				}
 			}
-
 			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void mouseExited(MouseEvent e) {}
 			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void mouseEntered(MouseEvent e) {}
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
+			public void mouseClicked(MouseEvent e) {}
 		});
 		canvse.addMouseMotionListener(new MouseMotionListener() {
-
 			@Override
-			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void mouseMoved(MouseEvent e) {}
 			@Override
 			public void mouseDragged(MouseEvent e) {
+/* ************************************************ Move ********************************************* */
 				if (isselect && canMove) {
 						
 					if(isfound) {
@@ -1220,13 +985,7 @@ public class Painter {
 						sh.setPosition(selectedshape.get(typeIndex).getPosition());
 						sh.setColor(selectedshape.get(typeIndex).getColor());
 						sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
-						sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
-						
-						System.out.println("sh  "+sh);
-						System.out.println("type shape  "+typeshape);
-						System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
-						System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
-						
+						sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);	
 						}else if(typeshape.getProperties().get("type")==2.0) {
 							sh=new Rectangle();
 							sh.setProperties(selectedshape.get(typeIndex).getProperties());
@@ -1234,12 +993,6 @@ public class Painter {
 							sh.setColor(selectedshape.get(typeIndex).getColor());
 							sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
 							sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
-							
-							System.out.println("sh  "+sh);
-							System.out.println("type shape  "+typeshape);
-							System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
-							System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
-							
 							}else if(typeshape.getProperties().get("type")==4.0) {
 								sh=new circle();
 								sh.setProperties(selectedshape.get(typeIndex).getProperties());
@@ -1247,12 +1000,7 @@ public class Painter {
 								sh.setColor(selectedshape.get(typeIndex).getColor());
 								sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
 								sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
-								
-								System.out.println("sh  "+sh);
-								System.out.println("type shape  "+typeshape);
-								System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
-								System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
-								
+							
 								}else if(typeshape.getProperties().get("type")==5.0) {
 									sh=new line();
 									
@@ -1261,12 +1009,6 @@ public class Painter {
 									sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
 									sh.setProperties(selectedshape.get(typeIndex).getProperties());
 									sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
-
-									System.out.println("sh  "+sh);
-									System.out.println("type shape  "+typeshape);
-									System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
-									System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
-									
 									}else if(typeshape.getProperties().get("type")==6.0) {
 										sh=new ellipse();
 										sh.setProperties(selectedshape.get(typeIndex).getProperties());
@@ -1274,12 +1016,7 @@ public class Painter {
 										sh.setColor(selectedshape.get(typeIndex).getColor());
 										sh.setFillColor(selectedshape.get(typeIndex).getFillColor());
 										sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
-										
-										System.out.println("sh  "+sh);
-										System.out.println("type shape  "+typeshape);
-										System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
-										System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
-										
+		
 										}else if(typeshape.getProperties().get("type")==3.0) {
 											sh=new Triangle();
 											sh.setPosition(selectedshape.get(typeIndex).getPosition());
@@ -1288,11 +1025,7 @@ public class Painter {
 											sh.setSelectionBounds(selectedshape.get(typeIndex).getSelectionBounds().x, selectedshape.get(typeIndex).getSelectionBounds().y, selectedshape.get(typeIndex).getval().x, selectedshape.get(typeIndex).getval().y);
 											sh.setProperties(selectedshape.get(typeIndex).getProperties());
 											sh.setDim(selectedshape.get(typeIndex).getwid_hie().x,selectedshape.get(typeIndex).getwid_hie().y);
-											System.out.println("sh  "+sh);
-											System.out.println("type shape  "+typeshape);
-											System.out.println("sh "+sh.getPosition()+"___"+sh.getProperties()+"______"+sh.getSelectionBounds());
-											System.out.println("typeShape "+typeshape.getPosition()+"___"+typeshape.getProperties()+"______"+typeshape.getSelectionBounds());
-											
+	
 											}
 						
 						dg.stRedo.clear();
@@ -1328,28 +1061,19 @@ public class Painter {
 									min = e.getX();
 									max = l.getval().y;
 								}
-
-								// max=forLine.get(i+1)-forLine.get(i+3);
 							}
 							l.setSelectionBounds(min, e.getY(), l.getval().x, max);
-							
-
 						}
 					} else if (typeshape.shaptype() == "Triangle") {
 						Triangle t=(Triangle) typeshape;
-						int min1;
-						int max1;
-						System.out.println(t.forTriangle);
 						for (int i = 0; i < t.forTriangle.size(); i = i + 4) {
 							if (t.forTriangle.get(i) > t.forTriangle.get(i + 2)) {
 								if (t.forTriangle.get(i + 1) < t.forTriangle.get(i + 3)) {
-									System.out.println("first");
 									t.setPosition(e.getPoint());
 									t.setSelectionBounds(e.getX() - t.getval().x / 2, e.getY(),
 											t.getval().x, t.getval().y);
 									
 								} else if (t.forTriangle.get(i + 1) > t.forTriangle.get(i + 3)) {
-									System.out.println("secound");
 									Point s = new Point();
 									s.x = e.getX() - t.getval().x / 2;
 									s.y = e.getY() + t.getval().y;
@@ -1360,50 +1084,33 @@ public class Painter {
 								}
 							} else if (t.forTriangle.get(i) < t.forTriangle.get(i + 2)) {
 								if (t.forTriangle.get(i + 1) < t.forTriangle.get(i + 3)) {
-									System.out.println("third");
 									t.setPosition(e.getPoint());
 									t.setSelectionBounds(e.getX() - t.getval().x / 2, e.getY(),
 											t.getval().x, t.getval().y);
 									
 								} else if (t.forTriangle.get(i + 1) >t.forTriangle.get(i + 3)) {
-									System.out.println("fourth");
 									Point s = new Point();
 									s.x = e.getX() - t.getval().x / 2;
 									s.y = e.getY() + t.getval().y;
 									t.setPosition(s);
 									t.setSelectionBounds(e.getX() - t.getval().x, e.getY(),
 											t.getval().x, t.getval().y);
-									
 								}
-								
 							}
-							
 						}
-
-						System.out.println(
-								e.getX() + " " + e.getY() + " " + t.getval().x + " " + t.getval().y);
-						System.out.println("this" +t.forTriangle.get(0) + " " + t.forTriangle.get(1) + " "
-								+ t.forTriangle.get(2) + " " + t.forTriangle.get(3));
-
 					} else {
 						typeshape.setSelectionBounds(e.getX(), e.getY(), typeshape.getval().x, typeshape.getval().y);
 					}
-
-					System.out.println(
-							e.getX() + " " + e.getY() + " " + typeshape.getval().x + " " + typeshape.getval().y);
 					canvse.paint(canvse.getGraphics());
 					dg.refresh(canvse.getGraphics());
 				}
-
 			}
 		});
-
 	}
-
 	Point pos = new Point();
 	Point lpos = new Point();
 	int x1, x2, y1, y2;
-
+	/* ************************************************Line And Ellipse ********************************************* */
 	public void drawShape(Canvas canvse) {
 
 		canvse.addMouseListener(ml = new MouseListener() {
@@ -1423,6 +1130,7 @@ public class Painter {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+/* ************************************************Line ********************************************* */				
 				if (numOfShape == 5) {
 					Color cc = color;
 					line l = new line();
@@ -1441,16 +1149,12 @@ public class Painter {
 					l.forLine.add(pos.y);
 					l.forLine.add(lpos.x);
 					l.forLine.add(lpos.y);
-//	    			pressed_shape=true;
 					int minx = pos.x;
 					int miny = pos.y;
 					int minxx = Math.abs(lpos.x - pos.x);
-					;
 					int minyy = Math.abs(lpos.y - pos.y);
-					;
 					if (pos.x > lpos.x) {
 						minx = pos.x - minxx;
-
 					}
 					if (pos.y > lpos.y) {
 						miny = lpos.y;
@@ -1461,15 +1165,12 @@ public class Painter {
 					selectPositions.add(minxx);
 					selectPositions.add(minyy);
 					l.setSelectionBounds(minx, miny, minxx, minyy);
-//	    			cli(minx,miny,minxx,minyy);
 					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
 					shapes.addAll(dg.allShapes);
 					dg.st.push(shapes);
 					dg.firstUndo = true;
 					canMove = true;
 					dg.stRedo.clear();
-					System.out.println(lpos.x + " " + pos.x + " " + Math.abs(lpos.x - pos.x));
-
 					Map<String, Double> m = new HashMap<>();
 					m.put("type", 5.0);
 					m.put("positionx", pos.getX());
@@ -1486,6 +1187,7 @@ public class Painter {
 					canvse.removeMouseListener(this);
 					canvse.removeMouseMotionListener(mx);
 				} else if (numOfShape == 6) {
+/* ************************************************Ellipse ********************************************* */
 					ellipse el = new ellipse();
 					Point temp = new Point();
 					temp.x = pos.x;
@@ -1521,8 +1223,6 @@ public class Painter {
 					selectPositions.add(Math.abs(temp.y - el.lastPos.y));
 					el.setSelectionBounds(temp.x, temp.y, Math.abs(temp.x - el.lastPos.x),
 							Math.abs(temp.y - el.lastPos.y));
-//        			cli(temp.x,temp.y,Math.abs(temp.x-el.lastPos.x),Math.abs(temp.y-el.lastPos.y));
-//        			pressed_shape=true;
 					ArrayList<eg.edu.alexu.csd.oop.draw.Shape> shapes = new ArrayList<eg.edu.alexu.csd.oop.draw.Shape>();
 					shapes.addAll(dg.allShapes);
 					dg.st.push(shapes);
@@ -1546,11 +1246,9 @@ public class Painter {
 					canvse.removeMouseMotionListener(mx);
 				}
 			}
-
 		});
 		canvse.addMouseMotionListener(mx = new MouseMotionListener() {
 			@Override
-
 			public void mouseDragged(MouseEvent e) {
 
 				if (numOfShape == 5) {

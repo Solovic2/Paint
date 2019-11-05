@@ -40,26 +40,18 @@ public class Triangle extends ourshape{
 	@Override
 	public void setProperties(Map<String, Double> properties) {
 		Properties=properties;
-//		if(add) {
 		wid=(int)Math.round(Properties.get("lastPositionx"));
 		hie=(int)Math.round(Properties.get("lastPositiony"));
-		
-//		}
 		this.selectx= (int)Math.round(Properties.get("boundx"));
 		this.selecty = (int)Math.round(Properties.get("boundy"));
 		this.selectlastx = (int)Math.round(Properties.get("boundlastPositionx"));
 		this.selectlasty = (int)Math.round(Properties.get("boundlastPositiony"));
 		forTriangle.clear();
-		System.out.println(" "+posx+" "+posy);
 		forTriangle.add((int)Math.round(Properties.get("positionx")));
 		forTriangle.add((int)Math.round(Properties.get("positiony")));
-//		if(add) {
 		forTriangle.add(wid);
 		forTriangle.add(hie);
-		System.out.println("My Tr "+forTriangle);
-		
 		add=false;
-//		}
 		ln3=posx;
 		ln1=wid-posx;
 		ln2=hie-posy;
@@ -128,11 +120,17 @@ public class Triangle extends ourshape{
 	public void setDim(int wi,int hi ) {
 		this.wid=wi;
 		this.hie=hi;
-		System.out.println("here we check"+wid+"  "+hie);
 		ln3=posx;
 		ln1=wid-posx;
 		ln2=hie-posy;
 	}
+	public Point getwid_hie() {
+		Point s=new Point();
+		s.x=wid;
+		s.y=hie;
+		return s;
+	}
+ 
 	int selectx,selecty,selectlastx,selectlasty;
 	public void setSelectionBounds(int x,int y, int w,int h) {
 		selectx=x;
@@ -149,10 +147,6 @@ public class Triangle extends ourshape{
 		Properties.put("boundy", (double) y);
 		Properties.put("boundlastPositionx", (double) w);
 		Properties.put("boundlastPositiony", (double) h);
-		
-		System.out.println(" "+x+" "+y+" "+w+" "+h+" "+posx+" "+posy+" "+ln1+" "+ln2);
-		
-		
 	}
 	
 	public Point getval() {
